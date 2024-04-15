@@ -76,7 +76,9 @@ export class ProductManager {
 		/* Busco el array de productos */
 		const products = await this.readProducts ()
 
-		return products
+		const arrayGroup = [...products]
+
+		return arrayGroup
 	}
 
 	/* Consultar por ID */
