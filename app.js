@@ -1,18 +1,33 @@
-import { Product, ProductManager } from './desafios/desafio_2.js';
+import express from 'express'
+import { ProductManager } from './desafios/desafio_2.js';
 
-const newInstance = new ProductManager( );
+/* Levantar sevidor */
+    const app = express()
+    const port = 8080
 
-/* Test de nueva instancia / Ejecutar 1 función a la vez*/
+/* Escuchamos los cambios del servidor */
+    app.listen(8080,()=>{
+        console.log('Observa los cambios en el navegador, gracias.');
+    })
 
-newInstance.getProducts ( )
 
-/* newInstance.addProduct ( "producto prueba", "Este es un producto prueba", 200, "Sin imagen", "abc123", 25 );
+/* Utilizamos los metodos de ProductManager */
 
-newInstance.getProducts ( )
+    const newInstance = new ProductManager( );
 
-newInstance.getProductById ( 1 )
+    const products = newInstance.getProducts ( )
 
-newInstance.updateProduct ( 1, {title: "Nuevo titulo"} ) 
 
-newInstance.deleteProduct ( 1 ) */
+    app.get('/products', (req, res)=>{
 
+        /* Establecemos el valor del limite */
+        const limit = req.query.limit;
+
+        /* Obtenemos  */
+
+        if (limit) {
+            res.send() /* `<p style="color:red;">El limite puesto fue ${products}</p>` */
+        }else{
+            res.send(`<p style="color:green;">No hay limite</p>`)
+        }
+    })

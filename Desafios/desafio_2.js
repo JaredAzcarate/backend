@@ -76,7 +76,7 @@ export class ProductManager {
 		/* Busco el array de productos */
 		const products = await this.readProducts ()
 
-		console.log( products );
+		return products
 	}
 
 	/* Consultar por ID */
@@ -100,38 +100,31 @@ export class ProductManager {
 	}
 
 	/* Actualizar */
-	async updateProduct ( id, updateInput ) {
+	async updateProduct(id, updateInput) {
 		try {
-			/* Busco el array de productos */
-			const products = await this.readProducts ()
-
-			/* Detecto el index del producto filtrado */
-			const indexProduct = products.findIndex ( product => product.id === id )
-
-			if (indexProduct !== -1 ) {
-				/* Actualizar el valor deseado, esto tuve que ver alternativas en chatGPT ya que tuve dificultad para conseguirlo y entenderlo */
-				for (const key in updateInput) {
-					if (updateInput.hasOwnProperty(key)) {
-						if (updateInput[key] !== undefined) {
-							products[indexProduct][key] = updateInput[key];
-						}
-					}
-				}
-
-				fs.promises.writeFile ( this.path, JSON.stringify ( products ) )
-
-				console.log('Producto actualizado correctamente');
-				
-
-			} else {
-				console.log('El producto no existe');
-			}
-			
+		  /* Busco el array de productos */
+		  const products = await this.readProducts();
+	
+	
+		  /* Detecto el index del producto filtrado */
+		  const productToUpdate = products.find((product) => product.id === id);
+	
+	
+		  if (productToUpdate) {
+			productToUpdate = { ...productToUpdate, ...updateInput };
+	
+	
+			fs.promises.writeFile(this.path, JSON.stringify(products));
+	
+	
+			console.log("Producto actualizado correctamente");
+		  } else {
+			console.log("El producto no existe");
+		  }
 		} catch (error) {
-			console.error("Hubo un error al actualizar el producto")
+		  console.error("Hubo un error al actualizar el producto");
 		}
-		
-	}
+	  }
 		
 
 	/* Borrar */
@@ -158,3 +151,22 @@ export class ProductManager {
 		
 	}
 }
+
+/* Run this in app.js */
+/* import { Product, ProductManager } from './desafios/desafio_2.js';
+
+const newInstance = new ProductManager( );
+
+Test de nueva instancia / Ejecutar 1 función a la vez
+
+newInstance.getProducts ( )
+
+newInstance.addProduct ( "producto prueba 5", "Este es un producto prueba 5", 600, "Sin imagen", "abc1234567", 60 );
+
+newInstance.getProducts ( )
+
+newInstance.getProductById ( 1 )
+
+newInstance.updateProduct ( 1, {title: "Nuevo titulo"} ) 
+
+newInstance.deleteProduct ( 1 ) */
