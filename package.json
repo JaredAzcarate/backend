@@ -4,10 +4,9 @@
   "description": "back end project",
   "type": "module",
   "main": "app.js",
-  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node --watch app.js"
+    "start": "node --watch src/app.js"
   },
   "author": "Jared Azcarate",
   "license": "ISC",

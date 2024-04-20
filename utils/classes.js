@@ -1,4 +1,3 @@
-import { log } from 'console';
 import fs, { readFileSync, writeFileSync } from 'fs';
 
 
