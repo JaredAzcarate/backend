@@ -9,6 +9,8 @@ import { ProductManager } from "/desafio_1/desafio_1.js"
     app.listen(PORT,()=>{
         console.log('Observa los cambios en el navegador, gracias.');
     })
+
+    /* Middlewares */
     app.use(express.json())
     app.use(express.urlencoded({extended: true}))
 
