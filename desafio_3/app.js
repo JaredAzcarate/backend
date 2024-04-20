@@ -1,5 +1,5 @@
 import express from 'express'
-import { ProductManager } from '../desafios/desafio_2.js';
+import { ProductManager } from '../desafio_2/desafio_2.js';
 
 /* Levantar sevidor */
 const app = express()
@@ -65,4 +65,3 @@ app.get('/products/:pid', (req, res) => {
         console.log(error);
     }
 } )
-

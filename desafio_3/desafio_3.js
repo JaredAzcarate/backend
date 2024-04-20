@@ -1,5 +1,5 @@
 import express from 'express'
-import { ProductManager } from './desafio_2' 
+import { ProductManager } from "/desafio_1/desafio_1.js" 
 
     /* Levantar sevidor */
     const app = express()
