@@ -87,7 +87,7 @@ router.put('/:pid', async ( req, res ) => {
 
     try {
         
-        await newInstance.updateProduct( productPid, { title: title, description: description, code:code, price:price, status:status, stock:stock, category:category, thumbnail:thumbnail } );
+        await newInstance.updateProduct( productPid, req.body );
 
         res.status(200).json( [ { menssage: 'Producto actualizado correctamente.' } ] );
 
