@@ -4,14 +4,16 @@ import fs, { readFileSync, writeFileSync } from 'fs';
 /* Clase de producto */
 export class Product {
 	
-	constructor ( id, title, description, price, thumbnail, code, stock ){
+	constructor ( id, title, description, code, price, status, stock, category, thumbnail ){
 		this.id = id,
 		this.title = title,
 		this.description = description,
-		this.price = price,
-		this.thumbnail = thumbnail,
 		this.code = code,
-		this.stock = stock
+		this.price = price,
+		this.status = status,
+		this.stock = stock,
+		this.category = category,
+		this.thumbnail = thumbnail
 	}
 
 }
@@ -38,7 +40,7 @@ export class ProductManager {
 	}
 
 	/* Agregar */
-	async addProduct ( title, description, price, thumbnail, code, stock ) {
+	async addProduct ( title, description, code, price, status, stock, category, thumbnail ) {
 
 		try {
 			/* Busco el array de productos */
@@ -50,9 +52,9 @@ export class ProductManager {
 			if (!findProduct) {
 				/* Crear ID automatico */
 				const autoId = listProduct.length + 1
-
+				
 				/* Crear nuevo prodcuto */
-				const newProduct = new Product ( autoId, title, description, price, thumbnail, code, stock )
+				const newProduct = new Product ( autoId, title, description, code, price, status, stock, category, thumbnail )
 
 				/* Agregar producto a array */
 				listProduct.push ( newProduct )
@@ -71,11 +73,17 @@ export class ProductManager {
 	}
 
 	/* Consultar */
-	async getProducts () {
+	async getProducts ( limit ) {
 		/* Busco el array de productos */
 		const products = await this.readProducts ()
 
+		/* Se hace una copia del array de productos */
 		const arrayGroup = [...products]
+
+		if (limit) {
+			/* Se filtra segun el valor de limit */
+			arrayGroup.length = limit;
+		}
 
 		return arrayGroup
 	}
@@ -102,26 +110,27 @@ export class ProductManager {
 
 	/* Actualizar */
 	async updateProduct(id, updateInput) {
+		
 		try {
 		  /* Busco el array de productos */
 		  const products = await this.readProducts();
 	
 	
-		  /* Detecto el index del producto filtrado */
+		  /* Detecto el id del producto filtrado */
 		  const productToUpdate = products.find((product) => product.id === id);
 	
 	
 		  if (productToUpdate) {
+
 			productToUpdate = { ...productToUpdate, ...updateInput };
-	
-	
-			fs.promises.writeFile(this.path, JSON.stringify(products));
-	
 	
 			console.log("Producto actualizado correctamente");
 		  } else {
 			console.log("El producto no existe");
 		  }
+
+		  fs.promises.writeFile(this.path, JSON.stringify(products));
+		  
 		} catch (error) {
 		  console.error("Hubo un error al actualizar el producto");
 		}
