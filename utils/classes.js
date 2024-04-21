@@ -124,13 +124,13 @@ export class ProductManager {
 
 			productToUpdate = { ...productToUpdate, ...updateInput };
 	
+			fs.promises.writeFile(this.path, JSON.stringify(products));
+	
+	
 			console.log("Producto actualizado correctamente");
 		  } else {
 			console.log("El producto no existe");
 		  }
-
-		  fs.promises.writeFile(this.path, JSON.stringify(products));
-		  
 		} catch (error) {
 		  console.error("Hubo un error al actualizar el producto");
 		}
