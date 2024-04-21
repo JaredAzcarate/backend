@@ -102,31 +102,35 @@ export class ProductManager {
 	}
 
 	/* Actualizar */
-	async updateProduct(id, updateInput) {
+	async updateProduct(id, inputToUpdate) {
 		try {
 		  /* Busco el array de productos */
 		  const products = await this.readProducts();
 	
 	
-		  /* Detecto el index del producto filtrado */
-		  const productToUpdate = products.find((product) => product.id === id);
-	
-	
-		  if (productToUpdate) {
-			productToUpdate = { ...productToUpdate, ...updateInput };
-	
-	
-			fs.promises.writeFile(this.path, JSON.stringify(products));
-	
-	
-			console.log("Producto actualizado correctamente");
-		  } else {
-			console.log("El producto no existe");
-		  }
+		// Encontrar el índice del producto a actualizar
+        const productIndex = products.findIndex((product) => product.id === id);
+
+        if (productIndex !== -1) {
+            // Obtener el producto original
+            const originalProduct = products[productIndex];
+
+            // Fusionar las propiedades proporcionadas con el producto original
+            const updatedProduct = { ...originalProduct, ...inputToUpdate };
+
+            // Actualizar solo las propiedades fusionadas en el producto original
+            products[productIndex] = updatedProduct;
+
+            // Guardar los productos actualizados
+            await fs.promises.writeFile(this.path, JSON.stringify(products));
+
+			console.log(products);
+		}
+		  
 		} catch (error) {
 		  console.error("Hubo un error al actualizar el producto");
 		}
-	  }
+	}
 		
 
 	/* Borrar */
