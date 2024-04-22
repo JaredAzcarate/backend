@@ -1,8 +1,7 @@
 import { Router } from "express";
-import { ProductManager } from '../../utils/classes.js'
+import { ProductManager } from '../../utils/product_functions.js'
 
 const router = Router()
-
 
 /* Utilizamos los metodos de ProductManager */
 const newInstance = new ProductManager();
@@ -64,9 +63,9 @@ router.post('/', async (req, res) => {
     
         try {
 
-            await newInstance.addProduct( title, description, code, price, status, stock, category, thumbnail );
+            const addProduct = await newInstance.addProduct( title, description, code, price, status, stock, category, thumbnail );
     
-            res.status(200).json( [ { message: 'Producto cargado correctamente.' } ] )       
+            res.status(200).json( [ { message: addProduct } ] )       
 
         } catch (error) {
 
@@ -87,13 +86,32 @@ router.put('/:pid', async ( req, res ) => {
 
     try {
         
-        await newInstance.updateProduct( productPid, req.body );
+        const productUpdate = await newInstance.updateProduct( productPid, req.body );
 
-        res.status(200).json( [ { menssage: 'Producto actualizado correctamente.' } ] );
+        res.status(200).json( [ { message: 'Producto actualizado correctamente.' }, { productUpdate } ] );
 
     } catch ( error ) {
 
-        res.status(500).json( [ { menssage: 'Hubo un problema al actualizar el producto:' }, { error } ] );
+        res.status(500).json( [ { message: 'Hubo un problema al actualizar el producto:' }, { error } ] );
+
+    }
+
+})
+
+/* DELETE /:pid */
+router.delete('/:pid', async ( req, res ) => {
+
+    const pid = parseInt ( req.params.pid );
+
+    try {
+        
+        const product = await newInstance.deleteProduct ( pid )
+        
+        res.status(200).json( [ { message: product } ] )
+
+    } catch (error) {
+        
+        res.status(500).json( [ {message: product }, {error} ] )
 
     }
 

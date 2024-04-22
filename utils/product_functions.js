@@ -42,6 +42,8 @@ export class ProductManager {
 	/* Agregar */
 	async addProduct ( title, description, code, price, status, stock, category, thumbnail ) {
 
+		let messageStatus = 'Producto cargado correctamente.';
+
 		try {
 			/* Busco el array de productos */
 			const listProduct = await this.readProducts ()
@@ -51,7 +53,15 @@ export class ProductManager {
 
 			if (!findProduct) {
 				/* Crear ID automatico */
-				const autoId = listProduct.length + 1
+				let autoId = listProduct.length + 1
+
+				/* Verificar que el id no exista */
+				const findPid = listProduct.find( product => product.id === autoId )
+
+				/* Condicion por si existe el id autogenerado */
+				if (findPid) {
+					autoId = autoId + 1;
+				}
 				
 				/* Crear nuevo prodcuto */
 				const newProduct = new Product ( autoId, title, description, code, price, status, stock, category, thumbnail )
@@ -63,11 +73,17 @@ export class ProductManager {
 				await fs.promises.writeFile ( this.path, JSON.stringify (listProduct) )
 
 			} else {
-				console.log(`El producto ${findProduct.code} ya existe en la lista`);
+
+				messageStatus = `El producto ${findProduct.code} ya existe en la lista`;
+				
 			}
 
+			return messageStatus;
+
 		} catch (error) {
+
 			console.log(error);
+
 		}
 
 	}
@@ -99,7 +115,7 @@ export class ProductManager {
 
 			console.log( productId );
 
-			return productId
+			return productId;
 
 		} catch (error) {
 
@@ -109,56 +125,68 @@ export class ProductManager {
 	}
 
 	/* Actualizar */
-	async updateProduct(id, inputToUpdate) {
+	async updateProduct(id, inputToUpdate) {	
+
 		try {
-		  /* Busco el array de productos */
-		  const products = await this.readProducts();
+		  	/* Busco el array de productos */
+		  	const products = await this.readProducts();
 	
-	
-		// Encontrar el índice del producto a actualizar
-        const productIndex = products.findIndex((product) => product.id === id);
+			// Encontrar el índice del producto a actualizar
+			const productIndex = products.findIndex((product) => product.id === id);
 
-        if (productIndex !== -1) {
-            // Obtener el producto original
-            const originalProduct = products[productIndex];
+			if (productIndex !== -1) {
+				// Obtener el producto original
+				const originalProduct = products[productIndex];
 
-            // Fusionar las propiedades proporcionadas con el producto original
-            const updatedProduct = { ...originalProduct, ...inputToUpdate };
+				// Fusionar las propiedades proporcionadas con el producto original
+				const updatedProduct = { ...originalProduct, ...inputToUpdate };
 
-            // Actualizar solo las propiedades fusionadas en el producto original
-            products[productIndex] = updatedProduct;
+				// Actualizar solo las propiedades fusionadas en el producto original
+				products[productIndex] = updatedProduct;
 
-            // Guardar los productos actualizados
-            await fs.promises.writeFile(this.path, JSON.stringify(products));
+				// Guardar los productos actualizados
+				await fs.promises.writeFile(this.path, JSON.stringify(products));
 
-			console.log(products);
-		}
+				return updatedProduct;
+
+			}
 		  
 		} catch (error) {
+
 		  console.error("Hubo un error al actualizar el producto");
+		  
 		}
 	}
 		
 	/* Borrar */
 	async deleteProduct ( id ) {
+
+		let message = 'El producto se elimino correctamente.';
+
 		try {
 			/* Busco el array de productos */
-			const products = await this.readProducts ()
+			const products = await this.readProducts ();
 
 			/* Detecto el index del producto filtrado */
-			const indexProduct = products.findIndex ( product => product.id === id )
+			const indexProduct = products.findIndex ( product => product.id === id );
 
 			if (indexProduct !== -1 ) {
-				products.splice ( indexProduct, 1 )
 
-				fs.promises.writeFile ( this.path, JSON.stringify ( products ) )
+				products.splice ( indexProduct, 1 );
+
+				await fs.promises.writeFile ( this.path, JSON.stringify ( products ) );
 
 			} else {
-				console.log('El producto no existe');
+
+				message = 'El producto no existe.';
 			}
+
+			return message;
 			
 		} catch (error) {
-			console.error("Hubo un error al eliminar el producto")
+
+			message = "Hubo un error al eliminar el producto";
+
 		}
 		
 	}
