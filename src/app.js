@@ -5,6 +5,7 @@ import viewsRouter from './routes/views.router.js'
 import handlebars from 'express-handlebars';
 import __dirName from './utils.js';
 import { Server } from 'socket.io';
+import { ProductManager } from '../functions/product_functions.js';
 
 /* Importamos express */
 const app = express();
@@ -34,10 +35,64 @@ app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 app.use('/', viewsRouter)
 
-socketServer.on('connection', socket => {
-    console.log('Nuevo cliente conectado');
 
-    socket.on('message', data => {
-        console.log(data);
+/* Configurar comunicacion de realTimeProducts */
+
+const newInstance = new ProductManager ()
+
+socketServer.on('connection', socket => {
+
+    console.log('Nuevo cliente conectado en realTimeProducts');
+
+    /* Socket para enviar productos al abrir pagina */
+    newInstance.getProducts()
+    .then( products => {
+        socket.emit('products', products)
     })
+    
+    /* Socket para recibir el nuevo producto del cliente */
+    socket.on('addProduct', async newProductData => {
+
+        try {
+
+            /* Agrega el nuevo producto */
+            await newInstance.addProduct(
+                newProductData.title,
+                newProductData.description,
+                newProductData.code,
+                newProductData.price,
+                true,
+                newProductData.stock,
+                newProductData.category,
+                newProductData.thumbnail
+            );
+
+            /* Se envia nuevamente la lista de productos */
+            const products = await newInstance.getProducts();
+            socket.emit('products', products);
+
+        } catch (error) {
+
+            console.error('Error al agregar un nuevo producto:', error);
+
+        }
+    });
+
+    /* Socket para recibir el producto a eliminar */
+    socket.on('deleteProduct', async productToDelete => {
+        try {
+
+            await newInstance.deleteProduct(productToDelete)
+
+            /* Se envia nuevamente la lista de productos */
+            const products = await newInstance.getProducts();
+            socket.emit('products', products);
+
+        } catch (error) {
+
+            console.error('Error al eliminar el producto:', error);
+
+        }
+    })
+
 } )
