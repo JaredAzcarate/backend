@@ -1,14 +1,21 @@
 import { Router } from "express";
-import productsModel from "../dao/models/products.model.js";
+import { ProductManager } from '../../functions/product_functions.js'
 
 const router = Router()
 
+/* Utilizamos los metodos de ProductManager */
+const newInstance = new ProductManager();
+
 /* GET / */
 router.get('/', async ( req, res ) => {
+
+    let limit = parseInt(req.query.limit);
+
+    const products = await newInstance.getProducts (limit);
     
     try {        
-        let products = await productsModel.find()
-        res.render('handledProducts', {products})
+
+        res.status(200).send(products)
 
     } catch (error) {
 
@@ -20,15 +27,17 @@ router.get('/', async ( req, res ) => {
 /* GET /:pid */
 router.get('/:pid', async ( req, res ) => {
 
-    const { pid } = req.params;
+    const productId = parseInt(req.params.pid);
 
-    const product = await productsModel.find( { _id: pid } )
+    const products = await newInstance.getProducts ();
 
     try {
-        /* Evaluamos si el producto existe */
-        if (product) {
+
+        let filterProduct = products.find( product => product.id === productId )
+
+        if (filterProduct) {
             
-            res.status(200).send(product)
+            res.status(200).send(filterProduct)
 
         } else{
             
@@ -37,9 +46,7 @@ router.get('/:pid', async ( req, res ) => {
         }
 
     } catch (error) {
-
         res.status(500).json( [ { error } ] );
-
     }
 } )
 
@@ -48,7 +55,6 @@ router.post('/', async (req, res) => {
 
     const { title, description, code, price, status, stock, category, thumbnail } = req.body;
 
-    
     if ( !title || !description || !code || !price || !status || !stock || !category || !thumbnail ) {
 
         res.status(500).json( [ { message: 'Todos los campos son obligatorios.' } ] )
@@ -56,18 +62,10 @@ router.post('/', async (req, res) => {
     } else {
     
         try {
-            const existProduct = await productsModel.findOne({code: code})
 
-            if (!existProduct){
-
-                const createProduct = await productsModel.create( {title, description, code, price, status, stock, category, thumbnail} );
-        
-                res.status(200).json( [ { message: createProduct } ] )       
-            }
-            else{
-                res.status(400).json( [ { message: "Ya existe un prodcuto con este código" } ] )    
-            }
-
+            const addProduct = await newInstance.addProduct( title, description, code, price, status, stock, category, thumbnail );
+    
+            res.status(200).json( [ { message: addProduct } ] )       
 
         } catch (error) {
 
@@ -81,16 +79,16 @@ router.post('/', async (req, res) => {
 router.put('/:pid', async ( req, res ) => {
 
     /* Identifico el id por params */
-    const { pid } = req.params;
+    const productPid = parseInt( req.params.pid );
 
     /* Solicito los datos que necestio actualizar */
     const { title, description, code, price, status, stock, category, thumbnail } = req.body;
 
     try {
         
-        const updateProduct = await productsModel.updateOne( { _id: pid }, req.body );
+        const productUpdate = await newInstance.updateProduct( productPid, req.body );
 
-        res.status(200).json( [ { message: 'Producto actualizado correctamente.' }, { updateProduct } ] );
+        res.status(200).json( [ { message: 'Producto actualizado correctamente.' }, { productUpdate } ] );
 
     } catch ( error ) {
 
@@ -103,17 +101,17 @@ router.put('/:pid', async ( req, res ) => {
 /* DELETE /:pid */
 router.delete('/:pid', async ( req, res ) => {
 
-    const { pid } = req.params;
+    const pid = parseInt ( req.params.pid );
 
     try {
         
-        const deleteProduct = await productsModel.deleteOne ( { _id: pid } )
+        const product = await newInstance.deleteProduct ( pid )
         
-        res.status(200).json( [ { message: deleteProduct } ] )
+        res.status(200).json( [ { message: product } ] )
 
     } catch (error) {
         
-        res.status(500).json( [ {message: deleteProduct }, {error} ] )
+        res.status(500).json( [ {message: product }, {error} ] )
 
     }
 

@@ -1,72 +1,119 @@
-import { Router } from "express";
-import { CartManager } from "../../functions/cart_functions.js";
+import { Router } from 'express';
+import cartsModel from '../dao/models/carts.model.js';
+import productsModel from '../dao/models/products.model.js';
 
-const router = Router()
-const newInstanceCart = new CartManager ()
+const router = Router();
 
+// GET method route
 router.get('/', async (req, res) => {
 
-    try {
+  try {
 
-        const carts = await newInstanceCart.readCarts()
+    let carts = await cartsModel.find()
 
-        res.status(200).json( [ { carts } ] );
+    res.status(200).send(carts)
 
-    } catch (error) {
+  } catch (error) {
 
-        res.status(500).json( [ { message: 'Hubo un error al obtener los carritos' } ] );
+    res.status(500).send(error)
 
-    }
-})
-
-/* POST / */
-router.post('/', async ( req, res ) => {
- 
-    try {
-        const newCartAdded = await newInstanceCart.addCart();
-        res.status(200).json([{ message: 'Carrito agregado' }, {newCartAdded}]);
-    } catch (error) {
-        res.status(500).json([{ message: error }]);
-    }
-    
-        
-})
-
-/* GET /:cid */
-router.get('/:cid', async ( req, res ) => {
-
-    const cid = parseInt( req.params.cid );
- 
-    try {
-        const listOfProductsFromCart = await newInstanceCart.getProductsFromCart(cid);
-        res.status(200).json([{ listOfProductsFromCart }]);
-    } catch (error) {
-        res.status(500).json([{ message: error }]);
-    }
-    
-        
-})
-
-/* POST  /:cid/product/:pid */
-router.post('/:cid/product/:pid', async (req, res) => {
-    
-    /* Se obtinen los valores de params */
-    const cid = parseInt(req.params.cid);
-    const pid = parseInt(req.params.pid);
-
-    try {
-
-        /* Se llama al metodo para añadir productos a un carrito exitente o nuevo carrito */
-        const currentCart = await newInstanceCart.addProductToCart(cid, pid)
-
-        res.status(200).json([{ message: 'Se añadio correctamente el producto al carrito' }, {currentCart}]);
-
-    } catch (error) {
-        
-        res.status(500).json([{ message: error }]);
-    }
+  }
 });
 
+// GET by cid
+router.get('/:cid', async (req, res) => {
 
+  const { cid } = req.params
 
-export default router;
+  try {
+
+    let cart = await cartsModel.findOne( { _id: cid } )
+
+    res.status(200).send(cart)
+
+  } catch (error) {
+
+    res.status(500).send(error)
+
+  }
+});
+
+// POST method route
+router.post('/:pid', async (req, res) => {
+
+  const { pid } = req.params
+
+  try {
+
+    let product = await productsModel.findOne({ _id: pid })
+
+    if(!product){
+
+      res.status(400).json({menssage: "El producto no existe"})
+
+    }
+
+    else{
+
+      let newCart = await cartsModel.create({ products: product })
+  
+      res.status(200).send(newCart)
+    }
+
+  } catch (error) {
+
+    res.status(500).send(error)
+    
+  }
+});
+
+// POST agregar producto a carrito existente
+router.post('/:cid/:pid', async (req, res) => {
+
+  const { cid, pid } = req.params
+
+  try {
+
+    let cart = await cartsModel.findOne({ _id: cid })
+
+    let product = await productsModel.findOne({ _id: pid })
+
+    if(!cart || !product){
+
+      res.status(400).json({menssage: "El producto o carrito no existe"})
+
+    }
+
+    else{
+      /* Desarrollar */
+      /* let updateCart = await cartsModel.findByIdAndUpdate({ products: product }) */
+  
+      res.status(200).send(newCart)
+    }
+
+  } catch (error) {
+
+    res.status(500).send(error)
+    
+  }
+});
+
+// DELETE method route
+router.delete('/:cid', async (req, res) => {
+  
+  const { cid } = req.params
+
+  try {
+
+    let cart = await cartsModel.deleteOne( { _id: cid } )
+
+    res.status(200).json([{ menssage: "Carrito eliminado correctamente" }])
+
+  } catch (error) {
+
+    res.status(500).send(error)
+
+  }
+});
+
+export default router

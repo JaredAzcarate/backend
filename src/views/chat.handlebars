@@ -1,0 +1,50 @@
+{{!-- Site title --}}
+<section class="h-52 flex items-center">
+    <p class="text-5xl font-bold mb-5">Chat online</p>
+</section>
+
+{{!-- Section Chat --}}
+<section id="chat" class="flex gap-5">
+    {{!-- Login --}}
+    <div class="bg-black text-white p-5 rounded-lg">        
+        <div class="w-full flex flex-col gap-5">
+            
+            <p class="text-2xl font-bold">Indentificate para habilitar del chat.</p>
+
+            <div class="flex flex-col gap-5 w-full">
+                <div class="space-y-2 ">
+                    <label id="labelCorreo" class="text-sm">Inglesa tu correo</label>
+                    <input type="email" id="loginUser" class="rounded-md p-2 focus:outline-none text-black w-full disabled:text-white" placeholder="Email"/>
+                </div>
+
+                <button type="button" class=" bg-transparent border-2 border-white text-white p-2 rounded-md flex gap-2 items-center justify-center"  id="loginUserButton">
+                    Ingresar                
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+    {{!-- Chat --}}
+    <div class="w-full border-2 border-black rounded-lg p-10 flex flex-col gap-5 ">
+        <p class="text-3xl font-bold">Equipo de Soporte</p>
+        <div id="menssageArea" class="h-96 rounded-md overflow-x-hidden space-y-5 w-full">
+            {{!-- Area donde se renderizan los mensajes --}}
+        </div>
+        <div class="grid grid-cols-6 gap-5">
+            <input type="text" id="messageToSend" class="col-span-5 rounded-md p-2 focus:outline-none" placeholder="Escribe tu mensaje..." disabled/>
+
+            <button type="button" class="col-span-1 bg-black text-white p-2 rounded-md flex gap-2 items-center justify-center disabled:opacity-20" disabled id="buttonSendMessage">
+                Enviar
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                </svg>
+                
+            </button>
+        </div>
+    </div>
+</section>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/chat.js"></script>

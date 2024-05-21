@@ -20,11 +20,12 @@ socket.on('products', data => {
     listProducts.innerHTML = '';
 
     data.forEach( product => {
-        const itemProduct = document.createElement('li')
+        const itemProduct = document.createElement('div')
         itemProduct.textContent = product.title
+        itemProduct.classList.add('flex')
         listProducts.appendChild(itemProduct)
 
-        const buttoDelete = document.createElement('button')
+/*         const buttoDelete = document.createElement('button')
         buttoDelete.textContent = "Eliminar"
         buttoDelete.classList.add('bg-red-400');
         buttoDelete.classList.add('p-1');
@@ -34,7 +35,7 @@ socket.on('products', data => {
 
         buttoDelete.addEventListener('click', () => {
             socket.emit('deleteProduct', product.id)
-        })
+        }) */
     })
 })
 

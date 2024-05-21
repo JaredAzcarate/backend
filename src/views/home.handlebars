@@ -1,15 +1,21 @@
-<div class="m-5 gap-5 bg-gray-100 rounded-lg p-5">
-    <p class="text-xl font-bold mb-5">Esta es la lista de todos los productos:</p>
+{{!-- Site title --}}
+<section class="h-52 flex items-center">
+    <p class="text-5xl font-bold mb-5">Nuestros productos</p>
+</section>
 
-        <ul>    
+<div class="gap-5 border-2 border-black rounded-lg p-5">
+
+    <ul class="grid grid-cols-4 gap-10">
         {{#each products}}
-            <li class="flex gap-4 w-3/6 justify-between hover:bg-black hover:text-white rounded-md p-2 transition-all">
-                <div>
-                    <p>{{id}}</p>
-                    <p>{{title}}</p>
+            <li class="col-span-1 w-full hover:bg-black hover:text-white rounded-md p-2 transition-all">
+                <div class=" space-y-2">
+                    <div>
+                        <span class="font-bold text-xs">Titulo del producto:</span>
+                        <p class="text-xl font-bold">{{this.title}}</p>
+                    </div>
+                    <p class=" text-xs"><span class="font-bold text-xs">ID:</span> {{this.id}}</p>
                 </div>
             </li>
         {{/each}}
-        </ul>
-
+    </ul>
 </div>

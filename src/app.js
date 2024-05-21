@@ -1,11 +1,18 @@
 import express, { json, urlencoded } from 'express';
+import homeRouter from './routes/home.router.js';
+import chatRouter from './routes/chat.router.js';
 import productsRouter from './routes/products.router.js';
-import cartsRouter from './routes/carts.router.js';
-import viewsRouter from './routes/views.router.js'
+import cartsRouter from './routes/carts.router.js'
 import handlebars from 'express-handlebars';
+import messagesModel from './dao/models/messages.model.js'
 import __dirName from './utils.js';
 import { Server } from 'socket.io';
-import { ProductManager } from '../functions/product_functions.js';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import productsModel from './dao/models/products.model.js';
+
+dotenv.config()
+console.log(process.env.MONGO_URL);
 
 /* Importamos express */
 const app = express();
@@ -16,8 +23,8 @@ const port = 8080;
 /* Escuchamos los cambios del servidor */
 const httpServer = app.listen( port, ()=>{ console.log('Corriendo en el servidor ' + port) } );
 
-/* Creamos un servidor para socket */
-const socketServer = new Server( httpServer );
+/* Conectamos Mongoose */
+mongoose.connect(process.env.MONGO_URL).then(()=> {console.log('Conectado a la base de datos')}).catch( error => console.error("Error al conectar la base de datos", error) )
 
 /* Definimos los middlewares */
 app.use(json()); // Middleware para leer json
@@ -31,68 +38,78 @@ app.use(express.static( __dirName + '/public'))
 
 
 /* Importar las rutas que serán usadas */
+app.use('/', homeRouter);
+app.use('/chat', chatRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
-app.use('/', viewsRouter)
 
 
-/* Configurar comunicacion de realTimeProducts */
+/* Configuracion de Socket Chat */
+const socketServer = new Server( httpServer );/* Creamos un servidor para socket */
 
-const newInstance = new ProductManager ()
+socketServer.on("connection", async (socket) => {
 
-socketServer.on('connection', socket => {
+    console.log('Nuevo cliente conectado');  
 
-    console.log('Nuevo cliente conectado en realTimeProducts');
-
-    /* Socket para enviar productos al abrir pagina */
-    newInstance.getProducts()
-    .then( products => {
+    try {
+        let messages = await messagesModel.find()
+        let products = await productsModel.find()
+        socket.emit('chatMessage', messages)
         socket.emit('products', products)
+        
+    } catch (error) {
+
+        console.log(error);
+    }
+
+    socket.on('chatMessage', async(data) => {
+
+        try {
+
+            await messagesModel.create({user:data.user, message: data.message})
+
+            let messages = await messagesModel.find()
+
+            socketServer.emit('chatMessage', messages)
+            
+        } catch (error) {
+
+            console.log(error);
+        }
+
+    })
+
+    socket.on('addProduct', async(data) => {
+
+        try {
+
+            await productsModel.create(data)
+
+            let products = await productsModel.find()
+
+            socket.emit('products', products)
+            
+        } catch (error) {
+
+            console.log(error);
+        }
+
     })
     
-    /* Socket para recibir el nuevo producto del cliente */
-    socket.on('addProduct', async newProductData => {
+    socket.on('deleteProduct', async(data) => {
 
         try {
 
-            /* Agrega el nuevo producto */
-            await newInstance.addProduct(
-                newProductData.title,
-                newProductData.description,
-                newProductData.code,
-                newProductData.price,
-                true,
-                newProductData.stock,
-                newProductData.category,
-                newProductData.thumbnail
-            );
+            await productsModel.deleteOne({_id: data})
 
-            /* Se envia nuevamente la lista de productos */
-            const products = await newInstance.getProducts();
-            socket.emit('products', products);
+            let products = await productsModel.find()
 
+            socket.emit('products', products)
+            
         } catch (error) {
 
-            console.error('Error al agregar un nuevo producto:', error);
-
+            console.log(error);
         }
-    });
 
-    /* Socket para recibir el producto a eliminar */
-    socket.on('deleteProduct', async productToDelete => {
-        try {
-
-            await newInstance.deleteProduct(productToDelete)
-
-            /* Se envia nuevamente la lista de productos */
-            const products = await newInstance.getProducts();
-            socket.emit('products', products);
-
-        } catch (error) {
-
-            console.error('Error al eliminar el producto:', error);
-
-        }
     })
-
-} )
+})
