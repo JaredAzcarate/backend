@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import productsModel from '../dao/models/products.model.js';
+import cartsModel from '../dao/models/carts.model.js';
 const router = Router();
 
 // GET method route

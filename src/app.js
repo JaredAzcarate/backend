@@ -84,11 +84,11 @@ socketServer.on("connection", async (socket) => {
 
     })
 
-    socket.on('addProduct', async(data) => {
+    socket.on('addProduct', async(newProduct) => {
 
         try {
 
-            await productsModel.create(data)
+            await productsModel.create(newProduct)
 
             let products = await productsModel.find()
 

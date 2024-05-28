@@ -22,23 +22,16 @@ router.get('/:pid', async ( req, res ) => {
 
     const { pid } = req.params;
 
-    const product = await productsModel.findOne( { _id: pid } )
+    
 
     try {
-        /* Evaluamos si el producto existe */
-        if (product) {
-            
-            res.status(200).render('singleProduct', product)
+        const product = await productsModel.findOne( { _id: pid } )
 
-        } else{
-            
-            res.status(404).json( [ { message: 'El producto no existe' } ] );
-
-        }
+        res.status(200).render('singleProduct', product)
 
     } catch (error) {
 
-        res.status(500).json( [ { error } ] );
+        res.status(500).render("errorPage", {title: "500", description: "El producto solicitado no existe"});
 
     }
 } )

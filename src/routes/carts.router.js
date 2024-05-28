@@ -57,7 +57,7 @@ router.post('/:pid', async (req, res) => {
 
       let newCart = await cartsModel.create({ products: product })
   
-      res.status(200).send(newCart)
+      res.status(200).json({newCart})
     }
 
   } catch (error) {

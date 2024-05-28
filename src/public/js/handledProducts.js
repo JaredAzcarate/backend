@@ -8,11 +8,10 @@ const newProductForm = document.getElementById("newProductForm")
 /* Obtener valores del input para nuevo producto*/
 const inputTitle = document.getElementById("title")
 const inputDescription = document.getElementById("description")
+const inputDetails = document.getElementById("details")
 const inputPrice = document.getElementById("price")
-const inputCode = document.getElementById("code")
-const inputStock = document.getElementById("stock")
 const inputCategory= document.getElementById("category")
-const inputThumbnail = document.getElementById("thumbnail")
+const inputImage = document.getElementById("image")
 
 /* Socket para recibir los productos del servidor y renderizarlos */
 socket.on('products', data => {
@@ -25,7 +24,7 @@ socket.on('products', data => {
         itemProduct.classList.add('flex')
         listProducts.appendChild(itemProduct)
 
-/*         const buttoDelete = document.createElement('button')
+        const buttoDelete = document.createElement('button')
         buttoDelete.textContent = "Eliminar"
         buttoDelete.classList.add('bg-red-400');
         buttoDelete.classList.add('p-1');
@@ -34,8 +33,8 @@ socket.on('products', data => {
         listProducts.appendChild(buttoDelete)
 
         buttoDelete.addEventListener('click', () => {
-            socket.emit('deleteProduct', product.id)
-        }) */
+            socket.emit('deleteProduct', product._id)
+        })
     })
 })
 
@@ -43,28 +42,27 @@ socket.on('products', data => {
 buttonAdd.addEventListener('click', () => {
 
     /* Se crea el nuevo producto */
-    const newProduct = {
+    let newProduct = {
         title : inputTitle.value,
         description : inputDescription.value,
-		code : inputCode.value,
+		details : inputDetails.value,
 		price : inputPrice.value,
 		status : true,
-		stock : inputStock.value,
 		category : inputCategory.value,
-		thumbnail : inputThumbnail.value
+		image : inputImage.value
     }
 
     /* Socket para enviar el nuevo producto al servidor */
     socket.emit('addProduct', newProduct )
 
     /* Resetear los valores del form */
-    inputTitle.value = ''
+    /* inputTitle.value = ''
     inputDescription.value = ''
     inputCode.value = ''
     inputPrice.value = ''
     inputStock.value = ''
     inputCategory.value = ''
-    inputThumbnail.value = ''
+    inputThumbnail.value = '' */
 
     /* Alerta para confirmar que se agrego el producto */
     const notification = document.createElement('p')
