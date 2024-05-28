@@ -22,13 +22,13 @@ router.get('/:pid', async ( req, res ) => {
 
     const { pid } = req.params;
 
-    const product = await productsModel.find( { _id: pid } )
+    const product = await productsModel.findOne( { _id: pid } )
 
     try {
         /* Evaluamos si el producto existe */
         if (product) {
             
-            res.status(200).send(product)
+            res.status(200).render('singleProduct', product)
 
         } else{
             

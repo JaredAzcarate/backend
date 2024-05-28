@@ -2,6 +2,7 @@ import express, { json, urlencoded } from 'express';
 import homeRouter from './routes/home.router.js';
 import chatRouter from './routes/chat.router.js';
 import productsRouter from './routes/products.router.js';
+import setCookieRouter from './routes/setCookie.router.js';
 import cartsRouter from './routes/carts.router.js'
 import handlebars from 'express-handlebars';
 import messagesModel from './dao/models/messages.model.js'
@@ -10,6 +11,7 @@ import { Server } from 'socket.io';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import productsModel from './dao/models/products.model.js';
+import cookieParser from 'cookie-parser';
 
 dotenv.config()
 console.log(process.env.MONGO_URL);
@@ -29,6 +31,7 @@ mongoose.connect(process.env.MONGO_URL).then(()=> {console.log('Conectado a la b
 /* Definimos los middlewares */
 app.use(json()); // Middleware para leer json
 app.use(urlencoded({ extended: true })); // Middleware para analizar los datos de solicitud codificados en URL sin importar el tipo
+app.use(cookieParser());
 
 /* Configuramos el motor de handlebars */
 app.engine( 'handlebars', handlebars.engine() ); /* Defino el motor de plantillas */
@@ -42,11 +45,13 @@ app.use('/', homeRouter);
 app.use('/chat', chatRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
+app.use('/cookies', setCookieRouter);
 
 
 /* Configuracion de Socket Chat */
 const socketServer = new Server( httpServer );/* Creamos un servidor para socket */
 
+/* Configuracion de Socket Productos */
 socketServer.on("connection", async (socket) => {
 
     console.log('Nuevo cliente conectado');  
