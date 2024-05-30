@@ -9,4 +9,7 @@
     <p class="text-xl font-bold mb-5">{{id}}</p>
 </div>
 
-<button id="addToCartButton">Agregar al carrito</button>
+<form action="/api/carts" method="POST">
+    <input type="text" name="pid" value="{{id}}" hidden>
+    <button type="submit">Agregar al carrito</button>
+</form>

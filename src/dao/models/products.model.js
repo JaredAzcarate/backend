@@ -8,7 +8,7 @@ const productsSchema = new mongoose.Schema({
     description : { type: String, require: true }, 
     details : { type: String, require: true }, 
     price : { type: Number, require: true }, 
-    status : { type: Boolean, require: true }, 
+    status : { type: Boolean, require: true, default:true }, 
     category : { type: String, require: true, max:20 }, 
     image : { type: String, require: true }
 });

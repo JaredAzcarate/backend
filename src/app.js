@@ -1,6 +1,7 @@
 import express, { json, urlencoded } from 'express';
 import homeRouter from './routes/home.router.js';
 import chatRouter from './routes/chat.router.js';
+import usersRouter from './routes/users.router.js';
 import productsRouter from './routes/products.router.js';
 import setCookieRouter from './routes/setCookie.router.js';
 import cartsRouter from './routes/carts.router.js'
@@ -12,9 +13,13 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import productsModel from './dao/models/products.model.js';
 import cookieParser from 'cookie-parser';
+import session from 'express-session';
+import sessionRouter from './routes/session.router.js'
+import FileStorage from 'session-file-store'
+import MongoStore from 'connect-mongo';
+import bodyParser from 'body-parser'
 
 dotenv.config()
-console.log(process.env.MONGO_URL);
 
 /* Importamos express */
 const app = express();
@@ -28,10 +33,28 @@ const httpServer = app.listen( port, ()=>{ console.log('Corriendo en el servidor
 /* Conectamos Mongoose */
 mongoose.connect(process.env.MONGO_URL).then(()=> {console.log('Conectado a la base de datos')}).catch( error => console.error("Error al conectar la base de datos", error) )
 
+const fileStorage = FileStorage( session )
+
 /* Definimos los middlewares */
-app.use(json()); // Middleware para leer json
-app.use(urlencoded({ extended: true })); // Middleware para analizar los datos de solicitud codificados en URL sin importar el tipo
+app.use(bodyParser.json()); // Middleware para leer json
+app.use(bodyParser.urlencoded({ extended: true })); // Middleware para analizar los datos de solicitud codificados en URL sin importar el tipo
 app.use(cookieParser());
+app.use(session(
+    {
+        store: MongoStore.create({
+            mongoUrl: process.env.MONGO_URL,
+            mongoOptions: {
+                useNewUrlParser: true,
+                useUnifiedTopology: true
+                },
+            ttl: 15,
+        }),
+        secret: '12345a',
+        resave: true,
+        saveUninitialized: true
+
+    }
+))
 
 /* Configuramos el motor de handlebars */
 app.engine( 'handlebars', handlebars.engine() ); /* Defino el motor de plantillas */
@@ -42,10 +65,12 @@ app.use(express.static( __dirName + '/public'))
 
 /* Importar las rutas que serán usadas */
 app.use('/', homeRouter);
-app.use('/chat', chatRouter);
+app.use('/api/chat', chatRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 app.use('/cookies', setCookieRouter);
+app.use('/api/session', sessionRouter);
+app.use('/api/users', usersRouter);
 
 
 /* Configuracion de Socket Chat */

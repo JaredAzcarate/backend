@@ -6,18 +6,7 @@ const router = Router();
 
 // GET method route
 router.get('/', async (req, res) => {
-
-  try {
-
-    let carts = await cartsModel.find()
-
-    res.status(200).send(carts)
-
-  } catch (error) {
-
-    res.status(500).send(error)
-
-  }
+  res.redirect('/')
 });
 
 // GET by cid
@@ -39,9 +28,9 @@ router.get('/:cid', async (req, res) => {
 });
 
 // POST method route
-router.post('/:pid', async (req, res) => {
+router.post('/', async (req, res) => {
 
-  const { pid } = req.params
+  const { pid } = req.body
 
   try {
 
@@ -55,9 +44,9 @@ router.post('/:pid', async (req, res) => {
 
     else{
 
-      let newCart = await cartsModel.create({ products: product })
-  
-      res.status(200).json({newCart})
+      await cartsModel.create({ products: product._id })
+
+      res.redirect('/')
     }
 
   } catch (error) {

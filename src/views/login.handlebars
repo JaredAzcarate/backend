@@ -1,0 +1,23 @@
+{{!-- Site title --}}
+<section class="h-52 flex items-center">
+    <p class="text-5xl font-bold mb-5">Iniciar sesión</p>
+</section>
+
+    <form class="max-w-[350px] flex flex-col gap-5" action="/api/session/login" method="POST">
+        <div class="flex flex-col gap-2">
+            <label for="email">Email:</label>
+            <input class="border-b border-black" type="email" name="email" required>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <label for="password">Password:</label>
+            <input class="border-b border-black" type="password" name="password" required>
+        </div>
+
+        <div class="flex flex-col gap-2 items-center">
+            <button class="bg-black text-white px-5 py-2 mt-5 w-full" type="submit">Login</button>
+            <p>- o -</p>
+            <a href="/api/session/register">Crear cuenta</a>
+        </div>
+    </form>
+
