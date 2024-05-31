@@ -10,24 +10,26 @@ router.get('/', async (req, res) => {
 });
 
 // GET by cid
-router.get('/:cid', async (req, res) => {
-
-  const { cid } = req.params
+router.get('/cart', async (req, res) => {
+  const cartId = req.cookies.cartId;
 
   try {
+    let cart = await cartsModel.find({_id: cartId})
 
-    let cart = await cartsModel.findOne( { _id: cid } )
+    if (!cart) {
+      return res.status(400).json({ message: "El carrito no existe" });
+    }
 
-    res.status(200).send(cart)
+    console.log(cart);
 
+    res.render('cart', { cart });
   } catch (error) {
-
-    res.status(500).send(error)
-
+    res.status(500).send(error);
   }
 });
 
-// POST method route
+
+/* Funcion para agregar producto a carrito */
 router.post('/', async (req, res) => {
 
   const { pid } = req.body
@@ -43,65 +45,31 @@ router.post('/', async (req, res) => {
     }
 
     else{
+      /* Evaluo si existe carrito o sitengo que crear uno nuevo */
+      let cartId = req.cookies.cartId
+      
+      if (!cartId) {
 
-      await cartsModel.create({ products: product._id })
+        let newCart = await cartsModel.create({ products: [{product: product._id}] })
+        res.cookie('cartId', newCart._id.toString(), { maxAge: 3600000 })
 
-      res.redirect('/')
+      } else {
+        /* Busco el carrito en la bd */
+        let cart = await cartsModel.findOne({ _id: cartId })
+        cart.products.push({product: product._id})
+        await cart.save();
+
+      }
+
+      res.redirect('/api/carts/cart');
+
+      
     }
 
   } catch (error) {
 
     res.status(500).send(error)
     
-  }
-});
-
-// POST agregar producto a carrito existente
-router.post('/:cid/:pid', async (req, res) => {
-
-  const { cid, pid } = req.params
-
-  try {
-
-    let cart = await cartsModel.findOne({ _id: cid })
-
-    let product = await productsModel.findOne({ _id: pid })
-
-    if(!cart || !product){
-
-      res.status(400).json({menssage: "El producto o carrito no existe"})
-
-    }
-
-    else{
-      /* Desarrollar */
-      /* let updateCart = await cartsModel.findByIdAndUpdate({ products: product }) */
-  
-      res.status(200).send(newCart)
-    }
-
-  } catch (error) {
-
-    res.status(500).send(error)
-    
-  }
-});
-
-// DELETE method route
-router.delete('/:cid', async (req, res) => {
-  
-  const { cid } = req.params
-
-  try {
-
-    let cart = await cartsModel.deleteOne( { _id: cid } )
-
-    res.status(200).json([{ menssage: "Carrito eliminado correctamente" }])
-
-  } catch (error) {
-
-    res.status(500).send(error)
-
   }
 });
 
