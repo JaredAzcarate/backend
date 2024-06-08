@@ -20,9 +20,9 @@ router.get('/cart', async (req, res) => {
       return res.status(400).json({ message: "El carrito no existe" });
     }
 
-    console.log(cart);
+    console.log(cart[0].products);
 
-    res.render('cart', { cart });
+    res.render('cart', { cart: cart[0].products });
   } catch (error) {
     res.status(500).send(error);
   }

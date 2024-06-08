@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { authMiddleware } from '../middlewares/auth/auth.js';
 import userModel from '../dao/models/user.model.js'
+import { createHash, isValiPassword } from '../utils.js';
+import passport from 'passport';
 
 const router = Router();
 
@@ -19,23 +21,19 @@ router.get("/register/admin", (req, res) => {
     res.render('registerAdmin')
 })
 
+/* Ruta de restore */
+router.get("/restore", (req, res) => {
+    res.render('restorePassword')
+})
+
+/* Ruta de restore */
+router.get("/error", (req, res) => {
+    res.render('errorPage', {title:'Error', description:'Ocurrio un error al registrar su usuario'})
+})
+
 /* Funcion para registrars usuario */
-router.post('/register', async (req, res) => {
-    const { name, lastname, email, password } = req.body;
-    try {
-        const user = await userModel.create({
-            name: name,
-            lastname: lastname,
-            email: email,
-            password: password
-        })
-
-        res.redirect('/api/session/login')
-        
-    } catch (error) {
-
-        res.json({ message: error });
-    }
+router.post('/register',passport.authenticate('register', {failureRedirect:'error'}), async (req, res) => {
+    res.redirect('/api/session/login')
 });
 
 /* Funcion para registrar admin */
@@ -46,7 +44,7 @@ router.post('/register/admin', async (req, res) => {
             name: name,
             lastname: lastname,
             email: email,
-            password: password,
+            password: createHash(password),
             role: role
         })
 
@@ -59,7 +57,28 @@ router.post('/register/admin', async (req, res) => {
 });
 
 /* Funcion para hacer login */
-router.post('/login', async (req, res) => {
+router.post('/login',passport.authenticate('login', {failureRedirect: 'error'}), async (req, res) => {
+    if (!req.user) {
+        return res.status(400).send({ status: "error", error: "Datos incompletos" })
+    }
+    try {
+
+        req.session.user = {
+            name: req.user.name,
+            lastname: req.user.lastname,
+            email: req.user.email,
+            role: req.user.role,
+        }
+
+        res.redirect("/api/users/profile")
+        
+    } catch (error) {
+        res.status(500).send('Error al iniciar sesión');
+    }
+});
+
+/* Funcion para hacer restaurar contaseña */
+router.post('/restore', async (req, res) => {
     const { email, password } = req.body;
     try {
         const user = await userModel.findOne({email})
@@ -68,23 +87,12 @@ router.post('/login', async (req, res) => {
 
             return res.json({error: `El usuario ${email} no existe`})
         }
-
-        if (user.password === password) {
-
-            req.session.user = {
-                name: user.name,
-                lastname: user.lastname,
-                email: user.email,
-                role: user.role,
-            }
-
-            return res.redirect("/api/users/profile")
-        }
         
-        else{
+        user.password = createHash(password)
 
-            return res.json({message: "Contraseña errada, intente nuevamente."})
-        }
+        user.save()
+
+        res.redirect("/api/session/login")
         
     } catch (error) {
         res.json({ error: error });

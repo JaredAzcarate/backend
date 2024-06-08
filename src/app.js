@@ -18,6 +18,8 @@ import sessionRouter from './routes/session.router.js'
 import FileStorage from 'session-file-store'
 import MongoStore from 'connect-mongo';
 import bodyParser from 'body-parser'
+import passport from 'passport';
+import initializePassport from './config/passport.config.js';
 
 dotenv.config()
 
@@ -55,6 +57,11 @@ app.use(session(
 
     }
 ))
+
+initializePassport()
+app.use(passport.initialize())
+app.use(passport.session())
+
 
 /* Configuramos el motor de handlebars */
 app.engine( 'handlebars', handlebars.engine() ); /* Defino el motor de plantillas */
