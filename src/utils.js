@@ -14,12 +14,12 @@ const __dirName = dirname(__fileName);
 
 const PRIVATE_KEY = "CoderSecret"
 
-const generateToken = (user) => {
+export const generateToken = (user) => {
     const token = jwt.sign((user),PRIVATE_KEY, {expiresIn:"24h"} )
     return token
 }
 
-const authToken = (req, res, next) => {
+export const authToken = (req, res, next) => {
     const authHeader = req.headers.authorization
     if (!authHeader) return res.status(401).send({ error: "No autenticado" })
     const token = authHeader.split(" ")[1]

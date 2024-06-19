@@ -2,14 +2,14 @@ import passport from "passport";
 import local from "passport-local"
 import GitHubStrategy from 'passport-github2'
 import userModel from "../dao/models/user.model.js";
-import { createHash, isValiPassword } from "../utils.js";
+import { createHash, isValiPassword, generateToken } from "../utils.js";
 
 const LocalStrategy = local.Strategy
 
 const initializePassport = () => {
     passport.use('register', new LocalStrategy (
         {passReqToCallback:true, usernameField:'email'}, async(req, username, password, done) => {
-            const { name, lastname, email } = req.body
+            const { first_name, last_name, age, email } = req.body
             try {
                 const user = await userModel.findOne({email: username})
                 if (user) {
@@ -19,14 +19,16 @@ const initializePassport = () => {
                 }
                 
                 const newUser = await userModel.create({
-                    name: name,
-                    lastname: lastname,
+                    first_name: first_name,
+                    last_name: last_name,
+                    age: age,
                     email: email,
                     password: createHash(password),
                     role: 0
                 })
-
-                return done(null, newUser)
+                const access_token = generateToken(newUser)
+                console.log(access_token);
+                return done(null, newUser, { token: access_token })
                 
             } catch (error) {
 
@@ -49,7 +51,9 @@ const initializePassport = () => {
                 }
                 
 
-                return done(null, user)
+                const access_token = generateToken(user)
+                console.log(access_token);
+                return done(null, user, { token: access_token })
                 
             } catch (error) {
                 return done(error)
@@ -67,8 +71,9 @@ const initializePassport = () => {
             let user = await userModel.findOne({ email: profile._json.email })
             if (!user) {
                 let newUser = {
-                    name: profile._json.name,
-                    lastname: "",  
+                    first_name: profile._json.name,
+                    last_name: "",  
+                    age: profile._json.age,  
                     email: profile._json.email,
                     password: ""
                 }

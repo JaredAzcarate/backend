@@ -7,7 +7,7 @@ import setCookieRouter from './routes/setCookie.router.js';
 import cartsRouter from './routes/carts.router.js'
 import handlebars from 'express-handlebars';
 import messagesModel from './dao/models/messages.model.js'
-import __dirName from './utils.js';
+import utils from './utils.js';
 import { Server } from 'socket.io';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
@@ -65,9 +65,9 @@ app.use(passport.session())
 
 /* Configuramos el motor de handlebars */
 app.engine( 'handlebars', handlebars.engine() ); /* Defino el motor de plantillas */
-app.set('views', __dirName + '/views') /* Defino la ruta donde se encuentran las vistas */
+app.set('views', utils.__dirName + '/views') /* Defino la ruta donde se encuentran las vistas */
 app.set('view engine', 'handlebars') /* Defino el motor de renderizacion */
-app.use(express.static( __dirName + '/public'))
+app.use(express.static( utils.__dirName + '/public'))
 
 
 /* Importar las rutas que serán usadas */

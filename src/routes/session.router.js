@@ -38,12 +38,13 @@ router.post('/register',passport.authenticate('register', {failureRedirect:'erro
 
 /* Funcion para registrar admin */
 router.post('/register/admin', async (req, res) => {
-    const { name, lastname, email, password, role } = req.body;
+    const { first_name, last_name, age, email, password, role } = req.body;
     try {
         const user = await userModel.create({
-            name: name,
-            lastname: lastname,
+            first_name: first_name,
+            last_name: last_name,
             email: email,
+            age: age,
             password: createHash(password),
             role: role
         })
@@ -64,8 +65,9 @@ router.post('/login',passport.authenticate('login', {failureRedirect: 'error'}),
     try {
 
         req.session.user = {
-            name: req.user.name,
-            lastname: req.user.lastname,
+            first_name: req.user.first_name,
+            last_name: req.user.last_name,
+            age: req.user.age,
             email: req.user.email,
             role: req.user.role,
         }

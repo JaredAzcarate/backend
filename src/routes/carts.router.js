@@ -14,7 +14,7 @@ router.get('/cart', async (req, res) => {
   const cartId = req.cookies.cartId;
 
   try {
-    let cart = await cartsModel.find({_id: cartId})
+    let cart = await cartsModel.find({ _id: cartId }).lean();
 
     if (!cart) {
       return res.status(400).json({ message: "El carrito no existe" });
@@ -31,7 +31,7 @@ router.get('/cart', async (req, res) => {
 
 /* Funcion para agregar producto a carrito */
 router.post('/', async (req, res) => {
-
+  /* Necesito resolver lo siguiente: almacenar los productos en una array (si el producto existe aumentar la propiedad quantity), luego cuando el usuario pasa al checkout se le solicitará iniciar sesion (en este momento el valor del carrito que se creo en el array se actualizará al carrito del usuario) */
   const { pid } = req.body
 
   try {
@@ -45,18 +45,32 @@ router.post('/', async (req, res) => {
     }
 
     else{
-      /* Evaluo si existe carrito o sitengo que crear uno nuevo */
+ 
       let cartId = req.cookies.cartId
       
       if (!cartId) {
 
-        let newCart = await cartsModel.create({ products: [{product: product._id}] })
+        let newCart = await cartsModel.create({ products: [{product: product._id, quantity: 1}] })
+
         res.cookie('cartId', newCart._id.toString(), { maxAge: 3600000 })
 
       } else {
-        /* Busco el carrito en la bd */
+        
         let cart = await cartsModel.findOne({ _id: cartId })
-        cart.products.push({product: product._id})
+
+        const identifyProduct = cart.products.find(prod => prod.product.equals(product._id))
+
+        if (identifyProduct) {
+
+          identifyProduct.quantity++
+
+        }
+
+        else{
+
+          cart.products.push({product: product._id})
+        }
+
         await cart.save();
 
       }

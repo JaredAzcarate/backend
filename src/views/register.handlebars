@@ -5,13 +5,18 @@
 
     <form class="max-w-[350px] flex flex-col gap-5" action="/api/session/register" method="POST">
         <div class="flex flex-col gap-2">
-            <label for="name">Nombre</label>
-            <input class="border-b border-black" type="text" name="name" required>
+            <label for="first_name">Nombre:</label>
+            <input class="border-b border-black" type="text" name="first_name" required>
         </div>
 
         <div class="flex flex-col gap-2">
-            <label for="lastname">Apellido</label>
-            <input class="border-b border-black" type="text" name="lastname" required>
+            <label for="last_name">Apellido:</label>
+            <input class="border-b border-black" type="text" name="last_name" required>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <label for="age">Edad:</label>
+            <input class="border-b border-black" type="number" name="age" required>
         </div>
 
         <div class="flex flex-col gap-2">
@@ -23,6 +28,7 @@
             <label for="password">Password:</label>
             <input class="border-b border-black" type="password" name="password" required>
         </div>
+
 
         <div class="flex flex-col gap-2 items-center">
             <button class="bg-black text-white px-5 py-2 mt-5 w-full" type="submit">Crear cuenta</button>
