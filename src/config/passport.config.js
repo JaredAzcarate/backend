@@ -40,7 +40,7 @@ const initializePassport = () => {
     passport.use('login', new LocalStrategy({passReqToCallback: true, usernameField: 'email'}, async(req, username, password, done) => {
             
             try {
-                const user = await userModel.findOne({email: username})
+                const user = await userModel.findOne({email: username}).lean()
 
                 if (!user) {
                     return done(null, false, {error: `El usuario ${username} no existe`})
