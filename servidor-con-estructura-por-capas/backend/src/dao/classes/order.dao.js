@@ -2,15 +2,19 @@ import orderModel from "../models/order.model.js";
 import productsModel from "../models/product.model.js";
 
 export default class OrderManager {
-
+    /* Necesito evaluar esta funcion ya que siempre se pasa un OID, tal vez la solucion sea crear aca el numero de OID. */
     addProductToOrder = async (sessionId, pid, oid) => {
+
         try {
+            
             const product = await productsModel.findById(pid);
+
             if (!product) {
                 throw new Error("Product not found");
             }
 
             let order;
+
             if (!oid) {
 
                 order = new orderModel({
@@ -20,6 +24,7 @@ export default class OrderManager {
                     totalPrice: product.price,
                     status: "pending"
                 });
+
             } else {
 
                 order = await orderModel.findById(oid);
@@ -28,6 +33,7 @@ export default class OrderManager {
                 }
 
                 const existingProductIndex = order.products.findIndex(p => p.product.toString() === pid);
+                
                 if (existingProductIndex > -1) {
                     order.products[existingProductIndex].quantity += 1;
                 } else {
@@ -37,7 +43,9 @@ export default class OrderManager {
             }
 
             await order.save();
+
             return order;
+
         } catch (error) {
             console.error("Error adding product to order:", error.message);
             throw error;

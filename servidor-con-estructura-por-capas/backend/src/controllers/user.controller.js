@@ -4,18 +4,18 @@ import { createHash } from "../utils/user.utils.js";
 
 const userController = new UserManager
 
-export const getUsers = async (req, res) => {
+export const getUsersController = async (req, res) => {
     let result = await userController.getUsers()
     res.send({status:'sucess', result})
 } 
 
-export const getUserById = async (req, res) => {
+export const getUserByIdController = async (req, res) => {
     const { uid } = req.params
     let result = await userController.getUserById(uid)
     res.send({status:'sucess', result})
 } 
 
-export const createUser = async (req, res) => {
+export const createUserController = async (req, res) => {
 
     const { first_name, last_name, age, email, password, role } = req.body;
 
@@ -33,7 +33,7 @@ export const createUser = async (req, res) => {
     res.send({status:'sucess', result})
 } 
 
-export const updateUser = async (req, res) => {
+export const updateUserController = async (req, res) => {
     const { uid } = req.params
     const { first_name, last_name, age, email } = req.body;
 

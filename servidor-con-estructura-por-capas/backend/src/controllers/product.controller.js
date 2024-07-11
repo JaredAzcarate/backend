@@ -2,19 +2,19 @@ import ProductManager from "../dao/classes/product.dao.js";
 
 const productController = new ProductManager
 
-export const getProducts = async (req, res) => {
+export const getProductsController = async (req, res) => {
     let result = await productController.getProducts()
     res.send({status:'sucess', result})
 }
 
-export const getProductbyId = async (req, res) => {
+export const getProductbyIdController = async (req, res) => {
     const { pid } = req.params
 
     let result = await productController.getProductById(pid)
     res.send({status:'sucess', result})
 }
 
-export const createProduct = async (req, res) => {
+export const createProductController = async (req, res) => {
     const { title, description, details, price, status, category, image } = req.body
 
     let product = {
@@ -31,7 +31,7 @@ export const createProduct = async (req, res) => {
     res.send({status:'sucess', result})
 }
 
-export const updateProduct = async (req, res) => {
+export const updateProductController = async (req, res) => {
     const { pid } = req.params
     const { title, description, details, price, status, category, image } = req.body
 
@@ -49,7 +49,7 @@ export const updateProduct = async (req, res) => {
     res.send({status:'sucess', result})
 }
 
-export const deleteProduct = async (req, res) => {
+export const deleteProductController = async (req, res) => {
     const { pid } = req.params
 
     let result = await productController.getProductById(pid)
