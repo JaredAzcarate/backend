@@ -1,13 +1,14 @@
 import express from 'express'
 import cors from 'cors'
 import homeRouter from './routes/home.router.js'
+import orderRouter from './routes/order.router.js'
 import authRouter from './routes/auth.router.js'
 import userRouter from './routes/user.router.js'
 import productRouter from './routes/product.router.js'
 import mongoose from 'mongoose'
-import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
+import dotenv from 'dotenv';
 
 
 dotenv.config()
@@ -33,6 +34,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // Middleware para analizar 
 
 /* Routes */
 app.use('/', homeRouter)
+app.use('/api/order', orderRouter)
 app.use('/api/auth', authRouter)
 app.use('/api/users', userRouter)
 app.use('/api/products', productRouter)

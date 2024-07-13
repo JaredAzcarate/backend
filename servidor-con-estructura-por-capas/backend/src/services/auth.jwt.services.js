@@ -18,5 +18,6 @@ export const loginUser = async (email, password) => {
 
     /* Generar el token JWT */
     const token = generateToken(user);
+    
     return token;
 };

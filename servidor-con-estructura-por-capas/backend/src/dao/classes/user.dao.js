@@ -22,6 +22,16 @@ export default class UserManager {
         }
     }
 
+    getUserByEmail = async (email) => {
+        try {
+            const result = await userModel.findOne({email: email})
+            return result
+        } catch (error) {
+            console.log(error)
+            return null
+        }
+    }
+
     createNewUser = async (user) => {
         try {
             const result = await userModel.create(user)
@@ -32,9 +42,9 @@ export default class UserManager {
         }
     }
 
-    updateUser = async (uid, user) => {
+    updateUser = async (uid, updateDataUser) => {
         try {
-            let result = await userModel.updateOne({ _id: uid }, { $set: user })
+            let result = await userModel.updateOne({ _id: uid }, { $set: updateDataUser })
             return result
         } catch (error) {
             console.log(error)
