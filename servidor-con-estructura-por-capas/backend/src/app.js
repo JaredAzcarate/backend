@@ -5,10 +5,13 @@ import orderRouter from './routes/order.router.js'
 import authRouter from './routes/auth.router.js'
 import userRouter from './routes/user.router.js'
 import productRouter from './routes/product.router.js'
+import mailRouter from './routes/mail.router.js'
 import mongoose from 'mongoose'
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
+import {__dirname} from './utils/path.utils.js'
+import path from 'path'
 
 
 dotenv.config()
@@ -38,3 +41,12 @@ app.use('/api/order', orderRouter)
 app.use('/api/auth', authRouter)
 app.use('/api/users', userRouter)
 app.use('/api/products', productRouter)
+app.use('/api/mail', mailRouter)
+
+/* Estáticos de React */
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+/* Manejar cualquier otra ruta con el archivo index.html de React */
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+});
