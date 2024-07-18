@@ -14,13 +14,14 @@ const transport = nodemailer.createTransport({
 });
 
 /* Función para enviar correos electrónicos */
-export const sendEmail = async (to, subject, text, html) => {
+export const sendEmail = async (to, subject, text, html, attachments) => {
     const mailOptions = {
         from: process.env.EMAIL_USER,
         to,
         subject,
         text,
-        html
+        html,
+        attachments
     };
 
     try {

@@ -15,7 +15,10 @@ export const getProductbyIdController = async (req, res) => {
 }
 
 export const createProductController = async (req, res) => {
-    const { title, description, details, price, status, category, image } = req.body
+    const { title, description, details, price, status, category } = req.body
+    
+    /* Extraemos el file que detecta multer y se pasa el PATH */
+    const image = req.file ? req.file.path : null;
 
     let product = {
         title,
@@ -33,7 +36,10 @@ export const createProductController = async (req, res) => {
 
 export const updateProductController = async (req, res) => {
     const { pid } = req.params
-    const { title, description, details, price, status, category, image } = req.body
+    const { title, description, details, price, status, category } = req.body
+
+    /* Extraemos el file que detecta multer y se pasa el PATH */
+    const image = req.file ? req.file.path : null;
 
     let product = {
         title,
