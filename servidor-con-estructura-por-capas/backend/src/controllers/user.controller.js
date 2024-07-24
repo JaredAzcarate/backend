@@ -1,4 +1,5 @@
 import UserManager from "../dao/classes/user.dao.js";
+import UserDTO from "../dto/user.dto.js";
 import { createHash } from "../utils/user.utils.js";
 
 
@@ -17,34 +18,18 @@ export const getUserByIdController = async (req, res) => {
 
 export const createUserController = async (req, res) => {
 
-    const { first_name, last_name, age, email, password, role } = req.body;
+    const userData = new UserDTO(req.body);
 
-    const user = {
-        first_name: first_name,
-        last_name: last_name,
-        email: email,
-        age: age,
-        password: createHash(password),
-        role: role
-    }
-
-    let result = await userController.createNewUser(user)
+    let result = await userController.createNewUser(userData)
 
     res.send({status:'sucess', result})
 } 
 
 export const updateUserController = async (req, res) => {
     const { uid } = req.params
-    const { first_name, last_name, age, email } = req.body;
+    const userData = new UserDTO.Update(req.body);
 
-    const user = {
-        first_name: first_name,
-        last_name: last_name,
-        email: email,
-        age: age,
-    }
-
-    let result = await userController.updateUser(uid, user)
+    let result = await userController.updateUser(uid, userData)
 
     res.send({status:'sucess', result})
 } 

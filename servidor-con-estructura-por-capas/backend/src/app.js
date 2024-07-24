@@ -44,7 +44,7 @@ app.use('/api/products', productRouter)
 app.use('/api/mail', mailRouter)
 
 /* Estáticos */
-app.use(express.static(path.join(__dirname, '../frontend/build'))); /* Estaticos de React */
+/*app.use(express.static(path.join(__dirname, '../frontend/build')));  Estaticos de React */
 app.use('/uploads', express.static('uploads')); /* Estaticos de multer */
 
 

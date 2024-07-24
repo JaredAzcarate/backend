@@ -1,63 +1,58 @@
 import ProductManager from "../dao/classes/product.dao.js";
+import ProductDTO from "../dto/product.dto.js";
 
-const productController = new ProductManager
+const productController = new ProductManager();
 
 export const getProductsController = async (req, res) => {
-    let result = await productController.getProducts()
-    res.send({status:'sucess', result})
+    try {
+        let result = await productController.getProducts();
+        res.send({ status: 'success', result });
+    } catch (error) {
+        res.status(500).send({ status: 'error', message: error.message });
+    }
 }
 
 export const getProductbyIdController = async (req, res) => {
-    const { pid } = req.params
+    const { pid } = req.params;
 
-    let result = await productController.getProductById(pid)
-    res.send({status:'sucess', result})
+    try {
+        let result = await productController.getProductById(pid);
+        res.send({ status: 'success', result });
+    } catch (error) {
+        res.status(500).send({ status: 'error', message: error.message });
+    }
 }
 
 export const createProductController = async (req, res) => {
-    const { title, description, details, price, status, category } = req.body
-    
-    /* Extraemos el file que detecta multer y se pasa el PATH */
-    const image = req.file ? req.file.path : null;
+    const productData = ProductDTO.getImageFromMulter(req.body, req.file);
 
-    let product = {
-        title,
-        description,
-        details,
-        price,
-        status,
-        category,
-        image
+    try {
+        let result = await productController.createProduct(productData);
+        res.send({ status: 'success', result });
+    } catch (error) {
+        res.status(500).send({ status: 'error', message: error.message });
     }
-
-    let result = await productController.createProduct(product)
-    res.send({status:'sucess', result})
 }
 
 export const updateProductController = async (req, res) => {
-    const { pid } = req.params
-    const { title, description, details, price, status, category } = req.body
+    const { pid } = req.params;
+    const productData = ProductDTO.getImageFromMulter(req.body, req.file);
 
-    /* Extraemos el file que detecta multer y se pasa el PATH */
-    const image = req.file ? req.file.path : null;
-
-    let product = {
-        title,
-        description,
-        details,
-        price,
-        status,
-        category,
-        image
+    try {
+        let result = await productController.updateProduct(pid, productData);
+        res.send({ status: 'success', result });
+    } catch (error) {
+        res.status(500).send({ status: 'error', message: error.message });
     }
-
-    let result = await productController.updateProduct( pid, product)
-    res.send({status:'sucess', result})
 }
 
 export const deleteProductController = async (req, res) => {
-    const { pid } = req.params
+    const { pid } = req.params;
 
-    let result = await productController.getProductById(pid)
-    res.send({status:'sucess', result})
+    try {
+        let result = await productController.deleteProduct(pid);
+        res.send({ status: 'success', result });
+    } catch (error) {
+        res.status(500).send({ status: 'error', message: error.message });
+    }
 }
