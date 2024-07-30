@@ -1,13 +1,14 @@
 import { createHash } from "../utils/user.utils.js";
 
 class UserDTO {
-    constructor({ first_name, last_name, email, age, password, cartId, role }) {
+    constructor({ first_name, last_name, email, age, password, lastOrderId, tickets, role }) {
       this.first_name = first_name;
       this.last_name = last_name;
       this.email = email;
       this.age = age;
       this.password = createHash(password);
-      this.cartId = cartId;
+      this.lastOrderId = lastOrderId;
+      this.tickets = tickets;
       this.role = role;
     }
   
