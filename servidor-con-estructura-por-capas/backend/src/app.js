@@ -11,7 +11,8 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import {__dirname} from './utils/path.utils.js'
-import path from 'path'
+import { addLogger, logErrors } from './middlewares/logger.middleware.js'
+import logger from './utils/logger.utils.js'
 
 
 dotenv.config()
@@ -33,6 +34,7 @@ app.use(cors())
 app.use(cookieParser(process.env.COOKIE_PARSER));
 app.use(bodyParser.json()); // Middleware para leer json
 app.use(bodyParser.urlencoded({ extended: true })); // Middleware para analizar los datos de solicitud codificados en URL sin importar el tipo
+app.use(addLogger);
 
 
 /* Routes */
@@ -43,12 +45,30 @@ app.use('/api/users', userRouter)
 app.use('/api/products', productRouter)
 app.use('/api/mail', mailRouter)
 
+/* Endpoint para probar todos los niveles de logger */
+app.get('/loggerTest', (req, res) => {
+    req.logger.debug('Debug log');
+    req.logger.http('HTTP log');
+    req.logger.info('Info log');
+    req.logger.warning('Warning log');
+    req.logger.error('Error log');
+    req.logger.fatal('Fatal log');
+    res.send('Logger test complete');
+});
+
+app.get('/error', (req, res) => {
+    res.send('Este es un error de ejemplo');
+    req.logger.error('Este es un error de ejemplo')
+});
+
+app.get('/info', (req, res) => {
+    res.send('Este es un ejemplo de log tipo "info"');
+    logger.info('La ruta de "info" ha sido llamada');
+});
+
 /* Estáticos */
 /*app.use(express.static(path.join(__dirname, '../frontend/build')));  Estaticos de React */
 app.use('/uploads', express.static('uploads')); /* Estaticos de multer */
+app.use(logErrors);
 
-
-/* Manejar cualquier otra ruta con el archivo index.html de React */
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
-});
+console.log('Environment:', process.env.NODE_ENV);
