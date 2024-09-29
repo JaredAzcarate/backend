@@ -57,6 +57,7 @@ app.use('/api/products', productRouter)
 app.use('/api/mail', mailRouter)
 app.use('/message', messagesRouter)
 
+
 /* Estáticos */
 app.use(express.static(__dirname + '/../public')); /* Estaticos para acceder a js o css */
 app.use('/uploads', express.static(path.join(__dirname, '/../uploads'))); /* Estaticos de multer */
@@ -103,5 +104,14 @@ socketServer.on("connection", async (socket) => {
         } catch (error) {
             console.log(error);
         }
+    });
+});
+
+app.use('/*', (req, res) => {
+    res.status(404).render('404', {
+        status: 404,
+        message: 'Lo siento, no hemos encontrado resultados para tu búsqueda.',
+        error: 'ERROR 404',
+        redirect: '/'
     });
 });

@@ -20,6 +20,7 @@
             <p class="text-lg text-black mb-8">{{description}}</p>
 
             <!-- Formulario para agregar al carrito -->
+            
             <form action="/api/order/add-product-to-order/{{_id}}" method="post">
                 <input type="hidden" name="pid" value="{{_id}}">
                 <button type="submit" class="py-3 px-5 text-base font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-300 transition">

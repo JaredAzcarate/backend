@@ -1,4 +1,5 @@
 import orderModel from "../models/order.model.js";
+import productsModel from "../models/product.model.js";
 import ticketModel from "../models/ticket.model.js";
 
 export default class OrderManager {
@@ -59,16 +60,24 @@ export default class OrderManager {
                 throw new Error('Order not found');
             }
     
+            /* Encontrar el índice del producto en la orden */
             const productIndex = order.products.findIndex(p => p.product.toString() === pid);
             if (productIndex === -1) {
                 throw new Error('Product not found in order');
             }
     
-            const product = order.products[productIndex].product; 
+            /* Obtener el producto de la base de datos */
+            const product = await productsModel.findById(pid); 
+            if (!product) {
+                throw new Error('Product not found in database');
+            }
+    
             const productQuantity = order.products[productIndex].quantity;
     
             order.totalPrice -= product.price * productQuantity;
+    
             order.products.splice(productIndex, 1);
+    
             order.totalPrice = Math.max(0, order.totalPrice);
     
             await order.save();
@@ -77,6 +86,7 @@ export default class OrderManager {
             throw error;
         }
     };
+    
 
     getAllTicketsByUserId = async (userId) => {
         try {

@@ -5,8 +5,8 @@ import { payTicketController } from "../controllers/ticket.controller.js";
 
 const router = Router();
 
-router.get("/find-order/:oid", getOrderByIdController)
-router.get("/checkout/:uid",authMiddleware, viewCheckOutByUserIdController) 
+router.get("/find-order/:oid?", getOrderByIdController)
+router.get("/checkout",authMiddleware, viewCheckOutByUserIdController) 
 router.post("/add-product-to-order/:pid", addProductToOrderController);
 router.post("/remove-product-from-order/:pid", removeProductFromOrderController);
 router.post("/confirm-purchase/:oid", authMiddleware, confirmPurchaseController);

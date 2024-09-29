@@ -1,39 +1,45 @@
 <div class="min-h-screen py-20">
   <h1 class="text-3xl font-bold mb-10">Carrito</h1>
 
-  <ul class="space-y-6">
-    {{#each products}}
-      <li class="flex items-center p-4 bg-white border border-gray-200 rounded-lg shadow-md">
-        <!-- Imagen del producto -->
-        <img class="w-20 h-20 object-cover rounded-lg" src="{{this.product.image}}" alt="{{this.product.title}}">
-        
-        <!-- Información del producto -->
-        <div class="ml-6 flex-1">
-          <h2 class="text-xl font-semibold text-gray-800">{{this.product.title}}</h2>
-          <p class="text-gray-600">Precio: {{this.product.price}}€ /unidad</p>
-          <p class="text-gray-600">Cantidad: {{this.quantity}}</p>
-        </div>
+  <!-- Si no hay productos, mostrar el mensaje "El carrito está vacío" -->
+  {{#if products.length}}
+    <ul class="space-y-6">
+      {{#each products}}
+        <li class="flex items-center p-4 bg-white border border-gray-200 rounded-lg shadow-md">
+          <!-- Imagen del producto -->
+          <img class="w-20 h-20 object-cover rounded-lg" src="{{this.product.image}}" alt="{{this.product.title}}">
+          
+          <!-- Información del producto -->
+          <div class="ml-6 flex-1">
+            <h2 class="text-xl font-semibold text-gray-800">{{this.product.title}}</h2>
+            <p class="text-gray-600">Precio: {{this.product.price}}€ /unidad</p>
+            <p class="text-gray-600">Cantidad: {{this.quantity}}</p>
+          </div>
 
-        <!-- Botón de eliminar -->
-        <form action="/api/order/remove-product-from-order/{{this.product._id}}" method="post" class="ml-6">
-            <button type="submit" class="px-4 py-2 text-red-500 bg-red-100 rounded-lg hover:bg-red-200">
-                Eliminar
-            </button>
-        </form>
+          <!-- Botón de eliminar -->
+          <form action="/api/order/remove-product-from-order/{{this.product._id}}" method="post" class="ml-6">
+              <button type="submit" class="px-4 py-2 text-red-500 bg-red-100 rounded-lg hover:bg-red-200">
+                  Eliminar
+              </button>
+          </form>
+        </li>
+      {{/each}}
+    </ul>
+    <div class="flex items-center justify-between bg-blue-50 p-5 rounded-md mt-10">
+      <!-- Precio total -->
+      <p class="text-2xl font-bold">Total: ${{totalPrice}}</p>
 
-      </li>
-    {{/each}}
-  </ul>
-  <div class="flex items-center justify-between bg-blue-50 p-5 rounded-md mt-10">
-    <!-- Precio total -->
-    <p class="text-2xl font-bold">Total: ${{totalPrice}}</p>
+      <!-- Botón para finalizar la compra -->
+      <form action="/api/order/confirm-purchase/{{oid}}" method="post">
+          <input type="hidden" name="oid" value="{{oid}}">
+          <button type="submit" class="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+              Confirmar compra
+          </button>
+      </form>
+    </div>
+  {{else}}
+    <!-- Mensaje cuando no hay productos -->
+    <p class="text-xl text-gray-500">El carrito está vacío.</p>
+  {{/if}}
 
-    <!-- Botón para finalizar la compra -->
-    <form action="/api/order/confirm-purchase/{{oid}}" method="post">
-        <input type="hidden" name="oid" value="{{oid}}">
-        <button type="submit" class="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-            Confirmar compra
-        </button>
-    </form>
-  </div>
 </div>

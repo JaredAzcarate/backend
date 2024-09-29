@@ -58,7 +58,7 @@ export const loginController = async (req, res) => {
             }
         }
         
-        res.redirect(`/api/order/checkout/${userId}`);
+        res.redirect(`/api/order/checkout`);
         /* res.send({ auth: true, token }); */
     } catch (error) {
         res.status(404).render('404',{ status:404, message: 'Al parecer colocaste alguna información incorrecta.', error: error, redirect: '/api/auth/login' });

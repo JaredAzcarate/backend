@@ -72,18 +72,28 @@ export const addProductToOrderController = async (req, res) => {
 };
 
 export const getOrderByIdController = async (req, res) => {
-    const { oid } = req.params
+    const { oid } = req.params;  // oid puede ser undefined ahora
 
     try {
-        const order = await orderManager.getOrderAndProducts(oid)
-        
-        res.render('cart', { oid: order._id, products: order.products, totalPrice: order.totalPrice });
+        // Si no hay `oid`, renderizamos el carrito vacío
+        if (!oid) {
+            return res.render('cart', { oid: null, products: [], totalPrice: 0, emptyCartMessage: "El carrito está vacío" });
+        }
 
-        /* res.status(200).send({ status: 'success', order }); */
+        // Obtener la orden usando el oid
+        const order = await orderManager.getOrderAndProducts(oid);
+
+        // Si no existe la orden o no tiene productos, renderizamos el carrito vacío
+        if (!order || order.products.length === 0) {
+            return res.render('cart', { oid: null, products: [], totalPrice: 0, emptyCartMessage: "El carrito está vacío" });
+        }
+
+        // Si la orden existe y tiene productos, renderizamos el carrito con los productos
+        res.render('cart', { oid: order._id, products: order.products, totalPrice: order.totalPrice });
     } catch (error) {
         res.status(500).send({ status: 'error', message: error.message });
     }
-}
+};
 
 export const viewOrdersByUserController = async (req, res) => {
     const userId = req.user._id; // Asumimos que el id del usuario está en req.user.
@@ -101,11 +111,11 @@ export const viewOrdersByUserController = async (req, res) => {
 };
 
 export const getAllTicketsByUserIdController = async (req, res) => {
-    const {uid} = req.params;
+    const userId = req.user.id;
 
     try {
         // Traigo todos los tickets del usuario
-        const tickets = await orderManager.getAllTicketsByUserId(uid);
+        const tickets = await orderManager.getAllTicketsByUserId(userId);
 
         // Filtrar los tickets entre pendientes de pago y pagos (según el estado en el ticket)
         const pendingTickets = tickets.filter(ticket => ticket.status === "pending_payment");
@@ -142,45 +152,6 @@ export const viewCheckOutByUserIdController = async (req, res) => {
     }
 }
 
-export const goToCheckoutController = async (req, res) => {
-    const { oid } = req.params;
-
-    try {
-        if (!oid) {
-            return res.status(404).send({ status: 'error', message: 'No order found' });
-        }
-
-        const order = await orderManager.getOrder(oid);
-        if (!order) {
-            return res.status(404).send({ status: 'error', message: 'Order not found' });
-        }
-
-        const newTicket = new TicketDTO({
-            code: uuidv4(),
-            purchase_datetime: Date.now(),
-            orderId: oid,
-            amount: order.totalPrice,
-            purchaser: order.user
-        });
-
-        const ticket = await orderManager.endOrder(newTicket);
-
-        /* Se guarda el ticket en el usuario */
-        const user = await userManager.getUserById(order.user);
-        if (user) {
-            user.tickets.push(ticket._id);
-            order.status = 'Order pending payment'
-            await user.save();
-            await order.save();
-        }
-
-        res.redirect('/api/order/checkout/' + user._id);
-        /* res.status(200).send({ status: 'success', ticket }); */
-    } catch (error) {
-        res.status(500).send({ status: 'error', message: error.message });
-    }
-};
-
 export const removeProductFromOrderController = async (req, res) => {
     const { pid } = req.params;
     const oid = res.locals.oid;
@@ -198,8 +169,8 @@ export const removeProductFromOrderController = async (req, res) => {
 };
 
 export const confirmPurchaseController = async (req, res) => {
-    const { oid } = req.params; // ID de la orden que se está confirmando
-    const sessionId = req.cookies.sessionId; // ID de sesión del usuario
+    const { oid } = req.params;
+    const sessionId = req.cookies.sessionId;
 
     try {
         if (!oid) {
@@ -211,18 +182,16 @@ export const confirmPurchaseController = async (req, res) => {
             return res.status(404).send({ status: 'error', message: 'Order not found' });
         }
 
-        // Actualizar el estado de la orden a "in process"
         order.status = "in_process";
         await order.save();
 
-        // Asociar la última orden al usuario
         const user = await userManager.getUserById(sessionId);
         if (user) {
-            user.lastOrderId = order._id; // Guardar la última orden
+            user.lastOrderId = order._id;
             await user.save();
         }
 
-        res.redirect('/api/order/checkout/' + user._id); // Redirigir al checkout o a la vista de órdenes
+        res.redirect('/api/order/checkout');
     } catch (error) {
         res.status(500).send({ status: 'error', message: error.message });
     }
@@ -241,7 +210,7 @@ export const sendPurchaseController = async (req, res) => {
             return res.status(404).send({ status: 'error', message: 'Order not found' });
         }
 
-        // Generar ticket solo aquí
+        /* Generar ticket */
         const newTicket = new TicketDTO({
             code: uuidv4(),
             purchase_datetime: Date.now(),
@@ -253,7 +222,7 @@ export const sendPurchaseController = async (req, res) => {
 
         const ticket = await orderManager.endOrder(newTicket);
 
-        // Se guarda el ticket en el usuario
+        /* Se guarda el ticket en el usuario */
         const user = await userManager.getUserById(order.user);
         if (user) {
             user.tickets.push(ticket._id);
@@ -264,8 +233,9 @@ export const sendPurchaseController = async (req, res) => {
 
         await order.save();
 
-        // Redirigir a la página de órdenes
-        res.redirect('/api/users/profile/tickets/' + user._id);
+        res.clearCookie('oid', { httpOnly: true });
+
+        res.redirect('/api/users/profile/tickets/');
         
     } catch (error) {
         res.status(500).send({ status: 'error', message: error.message });

@@ -7,7 +7,7 @@ const router = Router()
 
 router.get("/", getUsersController)
 router.get("/find-user/:uid", getUserByIdController)
-router.get("/profile/tickets/:uid", authMiddleware, getAllTicketsByUserIdController)
+router.get("/profile/tickets", authMiddleware, getAllTicketsByUserIdController)
 router.get("/profile/my-account", authMiddleware, viewProfileController);
 router.get("/profile/edit-account", authMiddleware, viewEditProfileController);
 router.post("/profile/edit-account", authMiddleware,updateUserController);

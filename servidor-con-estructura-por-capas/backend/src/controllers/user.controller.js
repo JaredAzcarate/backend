@@ -37,7 +37,7 @@ export const viewProfileController = async (req, res) => {
         }
 
         // Convertimos el usuario en un objeto plano
-        const userPlain = user.toObject(); // Mongoose tiene el método toObject para convertir el modelo a un objeto plano
+        const userPlain = user.toObject();
 
         res.render("my-account", { user: userPlain });
     } catch (error) {
@@ -49,6 +49,9 @@ export const viewProfileController = async (req, res) => {
 export const signUpController = async (req, res) => {
     const { first_name, last_name, address, email, age, password, role } = req.body;
 
+    const allowedRoles = ['user', 'admin'];
+    const userRole = allowedRoles.includes(role) ? role : 'user';
+
     const newUser = new UserDTO({
         first_name,
         last_name,
@@ -56,7 +59,7 @@ export const signUpController = async (req, res) => {
         email,
         age,
         password,
-        role: role || 'user'
+        role: userRole
     });
 
     const result = await userController.createNewUser(newUser);
@@ -64,7 +67,7 @@ export const signUpController = async (req, res) => {
         return res.status(500).send('Error al crear el usuario');
     }
 
-    res.status(201).render('login')
+    res.status(201).render('login');
 };
 
 export const updatePasswordController = async (req, res) => {
