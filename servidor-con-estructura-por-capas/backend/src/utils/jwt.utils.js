@@ -7,7 +7,18 @@ const secretKey = process.env.JWT_SECRET;
 
 export const generateToken = (user) => {
     /* Aca defino los datos que quiero codificar en el token*/
-    return jwt.sign({ id: user._id, email: user.email }, secretKey, { expiresIn: '1h' });
+    const tokenData = {
+        id: user._id,
+        email: user.email,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        address: user.address,
+        age: user.age,
+        role: user.role               
+    };
+
+    /* Genero el token con los datos especificados */
+    return jwt.sign(tokenData, secretKey, { expiresIn: '1h' });
 };
 
 export const verifyToken = (token) => {

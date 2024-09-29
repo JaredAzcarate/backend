@@ -1,3 +1,4 @@
+import { createHash } from "../../utils/user.utils.js"
 import userModel from "../models/user.model.js"
 
 export default class UserManager {
@@ -42,12 +43,24 @@ export default class UserManager {
         }
     }
 
-    updateUser = async (uid, updateDataUser) => {
+    updatePassword = async (email, newPassword) => {
+        
         try {
-            let result = await userModel.updateOne({ _id: uid }, { $set: updateDataUser })
-            return result
+            const user = await userModel.findOne({email})
+
+            if (!user) {
+
+                return res.json({error: `El usuario ${email} no existe`})
+            }
+            
+            user.password = createHash(newPassword)
+
+            user.save()
+
+            return user
+            
         } catch (error) {
-            console.log(error)
+            res.json({ error: error });
         }
     }
 }

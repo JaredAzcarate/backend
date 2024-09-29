@@ -10,7 +10,8 @@ export const authMiddleware = (req, res, next) => {
     const token = req.cookies.token;
 
     if (!token) {
-        return res.status(401).send({ status: "error", message: "Unauthorized" });
+        return res.status(401).render('login',{ status: "error", message: "Unauthorized" });
+        /* return res.status(401).send({ status: "error", message: "Unauthorized" }); */
     }
     try {
         /* Decodifico los daots almacenados en el token */

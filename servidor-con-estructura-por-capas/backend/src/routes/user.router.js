@@ -1,11 +1,16 @@
 import { Router } from "express";
-import { createUserController, getUserByIdController, getUsersController, updateUserController } from "../controllers/user.controller.js";
+import { getUserByIdController, getUsersController, updateUserController, viewEditProfileController, viewProfileController } from "../controllers/user.controller.js";
+import { authMiddleware } from "../middlewares/auth.middleware.js";
+import { getAllTicketsByUserIdController } from "../controllers/order.controller.js";
 
 const router = Router()
 
 router.get("/", getUsersController)
-router.get("/:uid", getUserByIdController)
-router.post("/create-user", createUserController)
-router.put("/update-user/:uid", updateUserController)
+router.get("/find-user/:uid", getUserByIdController)
+router.get("/profile/tickets/:uid", authMiddleware, getAllTicketsByUserIdController)
+router.get("/profile/my-account", authMiddleware, viewProfileController);
+router.get("/profile/edit-account", authMiddleware, viewEditProfileController);
+router.post("/profile/edit-account", authMiddleware,updateUserController);
+
 
 export default router

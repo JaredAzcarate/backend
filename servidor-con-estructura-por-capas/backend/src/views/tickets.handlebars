@@ -1,0 +1,78 @@
+<div class="min-h-screen py-20">
+  <h1 class="text-6xl font-bold mb-10 text-blue-500">Mis Pedidos</h1>
+
+  <div class="grid gap-10">
+    
+    <!-- Tickets Pendientes de Pago -->
+    <div>
+      <h2 class="text-2xl font-semibold mb-6 text-gray-800">Pendientes de Pago</h2>
+      
+      {{#if pendingTickets.length}}
+        <ul class="space-y-6">
+          {{#each pendingTickets}}
+            <li class="p-4 bg-gray-50 border border-gray-200 rounded-lg shadow-md">
+              <div class="pb-5 border-b">
+                <div class="flex items-start justify-between gap-5">
+                  <div class="w-full">
+                    <p class="text-gray-600 text-sm">Código del Ticket:</p>
+                    <p class="text-gray-800 text-base font-semibold">{{this.code}}</p>
+                  </div>
+                  <div class="w-full">
+                    <p class="text-gray-600 text-sm">Fecha de Compra:</p>
+                    <p class="text-gray-800 text-base font-semibold">{{this.purchase_datetime}}</p>
+                  </div>
+                  <div class="w-full">
+                    <p class="text-gray-600 text-sm">Monto Total:</p>
+                    <p class="text-gray-800 text-base font-semibold">${{this.amount}}</p>
+                  </div>
+                  <form action="/api/order/pay-order" method="POST" class="w-full">
+                    <input type="hidden" name="ticketId" value="{{this._id}}">
+                    <button class="bg-blue-500 text-white px-5 py-2 w-full rounded hover:bg-blue-600 transition duration-200" type="submit">
+                      Pagar ahora
+                    </button>
+                  </form>
+                </div>
+              </div>
+              <p class="mt-4 text-yellow-500 font-medium">Estado: Pendiente de Pago</p>
+            </li>
+          {{/each}}
+        </ul>
+      {{else}}
+        <p class="text-gray-600">No tienes tickets pendientes de pago.</p>
+      {{/if}}
+    </div>
+
+    <!-- Tickets Pagados -->
+    <div>
+      <h2 class="text-2xl font-semibold mb-6 text-gray-800">Pedidos Finalizados</h2>
+
+      {{#if completedTickets.length}}
+        <ul class="space-y-6">
+          {{#each completedTickets}}
+            <li class="p-4 bg-gray-50 border border-gray-200 rounded-lg shadow-md">
+              <div class="pb-5 border-b">
+                <div class="flex items-start justify-between gap-5">
+                  <div class="w-full">
+                    <p class="text-gray-600 text-sm">Código del Ticket:</p>
+                    <p class="text-gray-800 text-base font-semibold">{{this.code}}</p>
+                  </div>
+                  <div class="w-full">
+                    <p class="text-gray-600 text-sm">Fecha de Compra:</p>
+                    <p class="text-gray-800 text-base font-semibold">{{this.purchase_datetime}}</p>
+                  </div>
+                  <div class="w-full">
+                    <p class="text-gray-600 text-sm">Monto Total:</p>
+                    <p class="text-gray-800 text-base font-semibold">${{this.amount}}</p>
+                  </div>
+                </div>
+              </div>
+              <p class="mt-4 text-green-500 font-medium">Estado: Pagado</p>
+            </li>
+          {{/each}}
+        </ul>
+      {{else}}
+        <p class="text-gray-600">No tienes tickets pagados.</p>
+      {{/if}}
+    </div>
+  </div>
+</div>

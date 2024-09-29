@@ -1,1 +1,50 @@
 2024-08-03 16:05:35 error: Este es un error de ejemplo
+2024-09-24 13:46:40 error: Error: Failed to lookup view "jared" in views directory "/Users/jaredazcarate/Estudios/ecommerce/servidor-con-estructura-por-capas/backend/src/utils/views"
+2024-09-24 13:46:41 error: Error: Failed to lookup view "jared" in views directory "/Users/jaredazcarate/Estudios/ecommerce/servidor-con-estructura-por-capas/backend/src/utils/views"
+2024-09-24 13:46:41 error: Error: Failed to lookup view "jared" in views directory "/Users/jaredazcarate/Estudios/ecommerce/servidor-con-estructura-por-capas/backend/src/utils/views"
+2024-09-24 13:46:41 error: Error: Failed to lookup view "jared" in views directory "/Users/jaredazcarate/Estudios/ecommerce/servidor-con-estructura-por-capas/backend/src/utils/views"
+2024-09-24 13:46:41 error: Error: Failed to lookup view "jared" in views directory "/Users/jaredazcarate/Estudios/ecommerce/servidor-con-estructura-por-capas/backend/src/utils/views"
+2024-09-24 13:46:42 error: Error: Failed to lookup view "jared" in views directory "/Users/jaredazcarate/Estudios/ecommerce/servidor-con-estructura-por-capas/backend/src/utils/views"
+2024-09-24 13:46:42 error: Error: Failed to lookup view "jared" in views directory "/Users/jaredazcarate/Estudios/ecommerce/servidor-con-estructura-por-capas/backend/src/utils/views"
+2024-09-24 13:46:42 error: Error: Failed to lookup view "jared" in views directory "/Users/jaredazcarate/Estudios/ecommerce/servidor-con-estructura-por-capas/backend/src/utils/views"
+2024-09-24 13:46:42 error: Error: Failed to lookup view "jared" in views directory "/Users/jaredazcarate/Estudios/ecommerce/servidor-con-estructura-por-capas/backend/src/utils/views"
+2024-09-24 13:47:13 error: Error: Failed to lookup view "jared" in views directory "/Users/jaredazcarate/Estudios/ecommerce/servidor-con-estructura-por-capas/backend/src/utils/views"
+2024-09-24 13:47:20 error: Error: Failed to lookup view "jared" in views directory "/Users/jaredazcarate/Estudios/ecommerce/servidor-con-estructura-por-capas/backend/src/utils/views"
+2024-09-24 13:49:00 error: Error: Failed to lookup view "jared" in views directory "/Users/jaredazcarate/Estudios/ecommerce/servidor-con-estructura-por-capas/backend/src/utils/views"
+2024-09-24 13:49:04 error: Error: Failed to lookup view "jared" in views directory "/Users/jaredazcarate/Estudios/ecommerce/servidor-con-estructura-por-capas/backend/src/utils/views"
+2024-09-24 13:56:27 error: Error: Failed to lookup view "jared" in views directory "/Users/jaredazcarate/Estudios/ecommerce/servidor-con-estructura-por-capas/backend/src/utils/views"
+2024-09-24 13:57:58 error: Error: Failed to lookup view "jared" in views directory "/Users/jaredazcarate/Estudios/ecommerce/servidor-con-estructura-por-capas/backend/src/utils../views"
+2024-09-24 13:58:06 error: Error: Failed to lookup view "jared" in views directory "/Users/jaredazcarate/Estudios/ecommerce/servidor-con-estructura-por-capas/backend/src/utils../views"
+2024-09-24 13:58:07 error: Error: Failed to lookup view "jared" in views directory "/Users/jaredazcarate/Estudios/ecommerce/servidor-con-estructura-por-capas/backend/src/utils../views"
+2024-09-24 13:58:07 error: Error: Failed to lookup view "jared" in views directory "/Users/jaredazcarate/Estudios/ecommerce/servidor-con-estructura-por-capas/backend/src/utils../views"
+2024-09-24 13:58:07 error: Error: Failed to lookup view "jared" in views directory "/Users/jaredazcarate/Estudios/ecommerce/servidor-con-estructura-por-capas/backend/src/utils../views"
+2024-09-24 13:58:07 error: Error: Failed to lookup view "jared" in views directory "/Users/jaredazcarate/Estudios/ecommerce/servidor-con-estructura-por-capas/backend/src/utils../views"
+2024-09-24 13:59:33 error: Error: ENOENT: no such file or directory, open '/Users/jaredazcarate/Estudios/ecommerce/servidor-con-estructura-por-capas/backend/src/views/layouts/main.handlebars'
+2024-09-24 13:59:33 error: Error: ENOENT: no such file or directory, open '/Users/jaredazcarate/Estudios/ecommerce/servidor-con-estructura-por-capas/backend/src/views/layouts/main.handlebars'
+2024-09-24 13:59:34 error: Error: ENOENT: no such file or directory, open '/Users/jaredazcarate/Estudios/ecommerce/servidor-con-estructura-por-capas/backend/src/views/layouts/main.handlebars'
+2024-09-24 13:59:34 error: Error: ENOENT: no such file or directory, open '/Users/jaredazcarate/Estudios/ecommerce/servidor-con-estructura-por-capas/backend/src/views/layouts/main.handlebars'
+2024-09-24 13:59:34 error: Error: ENOENT: no such file or directory, open '/Users/jaredazcarate/Estudios/ecommerce/servidor-con-estructura-por-capas/backend/src/views/layouts/main.handlebars'
+2024-09-24 13:59:34 error: Error: ENOENT: no such file or directory, open '/Users/jaredazcarate/Estudios/ecommerce/servidor-con-estructura-por-capas/backend/src/views/layouts/main.handlebars'
+2024-09-24 16:06:44 error: Error: Cannot set headers after they are sent to the client
+2024-09-24 16:06:45 error: Error: Cannot set headers after they are sent to the client
+2024-09-24 16:06:45 error: Error: Cannot set headers after they are sent to the client
+2024-09-24 16:06:46 error: Error: Cannot set headers after they are sent to the client
+2024-09-24 16:06:46 error: Error: Cannot set headers after they are sent to the client
+2024-09-24 16:06:46 error: Error: Cannot set headers after they are sent to the client
+2024-09-24 16:06:46 error: Error: Cannot set headers after they are sent to the client
+2024-09-24 16:06:47 error: Error: Cannot set headers after they are sent to the client
+2024-09-24 23:03:29 error: Error: Failed to lookup view "logger" in views directory "/Users/jaredazcarate/Estudios/ecommerce/servidor-con-estructura-por-capas/backend/src/utils/../views"
+2024-09-24 23:05:20 error: Error: Failed to lookup view "logger" in views directory "/Users/jaredazcarate/Estudios/ecommerce/servidor-con-estructura-por-capas/backend/src/utils/../views"
+2024-09-25 10:17:35 error: Error: Failed to lookup view "tickets" in views directory "/Users/jaredazcarate/Estudios/ecommerce/servidor-con-estructura-por-capas/backend/src/utils/../views"
+2024-09-25 22:10:00 error: Error: Missing helper: "eq"
+2024-09-25 22:10:06 error: Error: Missing helper: "eq"
+2024-09-25 22:10:09 error: Error: Missing helper: "eq"
+2024-09-25 22:10:42 error: Error: Missing helper: "eq"
+2024-09-25 22:11:38 error: Error: Missing helper: "eq"
+2024-09-25 22:17:32 error: Error: Missing helper: "user.role"
+2024-09-25 22:17:33 error: Error: Missing helper: "user.role"
+2024-09-25 22:17:33 error: Error: Missing helper: "user.role"
+2024-09-25 22:17:34 error: Error: Missing helper: "user.role"
+2024-09-25 22:17:34 error: Error: Missing helper: "user.role"
+2024-09-25 22:17:34 error: Error: Missing helper: "user.role"
+2024-09-25 22:23:34 error: Error: Missing helper: "getInitials"

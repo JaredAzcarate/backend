@@ -8,6 +8,24 @@ import { createHash } from '../utils/user.utils.js';
 const userManager = new UserManager
 const orderManager = new OrderManager
 
+export const viewLoginController = async (req, res) => {
+
+    try {
+        res.render('login')
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+};
+
+export const viewForgotPasswordController = async (req, res) => {
+
+    try {
+        res.render('forgot-password')
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+};
+
 export const loginController = async (req, res) => {
     const { email, password } = req.body; 
     const sessionId = req.cookies.sessionId;
@@ -40,9 +58,10 @@ export const loginController = async (req, res) => {
             }
         }
         
-        res.send({ auth: true, token });
+        res.redirect(`/api/order/checkout/${userId}`);
+        /* res.send({ auth: true, token }); */
     } catch (error) {
-        res.status(500).send({ message: error.message });
+        res.status(404).render('404',{ status:404, message: 'Al parecer colocaste alguna información incorrecta.', error: error, redirect: '/api/auth/login' });
     }
 };
 
@@ -54,14 +73,15 @@ export const logOutController = async (req, res) => {
             secure: true,
             sameSite: 'strict'
         });
-        
-        res.status(200).send({ status: 'success', message: 'Logout successful' });
+
+        res.redirect('/');
+        /* res.status(200).send({ status: 'success', message: 'Logout successful' }); */
     } catch (error) {
         res.status(500).send({ message: error.message });
     }
 };
 
-export const resetPasswordController = async (req, res) => {
+export const forgotPasswordController = async (req, res) => {
     const { email, newPassword } = req.body;
 
     try {
@@ -77,7 +97,8 @@ export const resetPasswordController = async (req, res) => {
 
         await userManager.updateUser(user._id, updatePassword)
 
-        res.status(200).send({ status: 'success', message: 'Password updated successfully' });
+        res.render('login')
+        /* res.status(200).send({ status: 'success', message: 'Password updated successfully' }); */
         
     } catch (error) {
         res.status(500).send({ message: error.message });

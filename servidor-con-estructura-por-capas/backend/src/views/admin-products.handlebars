@@ -1,0 +1,133 @@
+<!-- Título de la página y botón para agregar nuevo producto -->
+<section class="h-52 flex items-center justify-between">
+    <p class="text-5xl font-bold mb-5">Gestionar productos</p>
+    <!-- Botón para abrir el modal de creación de productos -->
+    <button data-modal-target="createProductModal" data-modal-toggle="createProductModal" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center" type="button">
+        Agregar nuevo producto
+    </button>
+</section>
+
+<!-- Lista de productos -->
+<section class="space-y-4">
+    <h2 class="text-2xl font-semibold">Lista de productos</h2>
+    
+    <!-- Renderizando productos con Handlebars en formato de lista -->
+    <ul class="space-y-4">
+        {{#each products}}
+        <li class="flex items-center gap-4 p-4 border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50">
+            <!-- Imagen del producto -->
+            <div class="w-24 h-24 flex-shrink-0">
+                <img src="{{this.image}}" alt="Producto" class="w-full h-full object-cover rounded-lg">
+            </div>
+            
+            <!-- Información del producto -->
+            <div class="flex-grow">
+                <p class="text-lg font-bold">{{this.title}}</p>
+                <p class="text-sm text-gray-600">{{this.description}}</p>
+                <p class="text-sm font-semibold text-gray-700">Precio: ${{this.price}}</p>
+            </div>
+
+            <!-- Botones de acciones -->
+            <div class="flex gap-2">
+                <!-- Botón para abrir el modal de edición -->
+                <button data-modal-target="editProductModal-{{this._id}}" data-modal-toggle="editProductModal-{{this._id}}" class="text-white bg-yellow-500 hover:bg-yellow-600 font-medium rounded-lg text-sm px-5 py-2.5">
+                    Editar
+                </button>
+
+                <!-- Botón para eliminar el producto -->
+                <form action="/api/products/delete-product/{{this._id}}?_method=DELETE" method="POST">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="text-white bg-red-600 hover:bg-red-700 font-medium rounded-lg text-sm px-5 py-2.5">Eliminar</button>
+
+                </form>
+            </div>
+        </li>
+
+        <!-- Modal para editar el producto -->
+        <div id="editProductModal-{{this._id}}" tabindex="-1" class="hidden fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto">
+            <div class="relative w-full max-w-2xl max-h-full">
+                <!-- Modal content -->
+                <div class="bg-white rounded-lg shadow">
+                    <!-- Modal header -->
+                    <div class="flex justify-between items-start p-4 border-b">
+                        <h3 class="text-xl font-semibold">Editar Producto</h3>
+                        <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" data-modal-hide="editProductModal-{{this._id}}">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 011.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <!-- Modal body -->
+                    <div class="p-6 space-y-6">
+                        <form id="editProductForm-{{this._id}}" action="/api/products/update-product/{{this._id}}?_method=PUT" method="POST" enctype="multipart/form-data">
+                            <input type="hidden" name="_method" value="PUT">
+                            <label for="title">Título:</label>
+                            <input type="text" id="title" name="title" value="{{this.title}}" required>
+
+                            <label for="description">Descripción:</label>
+                            <input type="text" id="description" name="description" value="{{this.description}}" required>
+
+                            <label for="details">Detalles:</label>
+                            <input type="text" id="details" name="details" value="{{this.details}}" required>
+
+                            <label for="price">Precio:</label>
+                            <input type="number" id="price" name="price" value="{{this.price}}" required>
+
+                            <label for="category">Categoría:</label>
+                            <input type="text" id="category" name="category" value="{{this.category}}" required>
+
+                            <label for="image">Imagen:</label>
+                            <input type="file" id="image" name="image">
+                            
+                            <button type="submit" class="mt-4 text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5">Actualizar Producto</button>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </ul>
+</section>
+
+<!-- Modal para crear un nuevo producto -->
+<div id="createProductModal" tabindex="-1" class="hidden fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto">
+    <div class="relative w-full max-w-2xl max-h-full">
+        <!-- Modal content -->
+        <div class="bg-white rounded-lg shadow">
+            <!-- Modal header -->
+            <div class="flex justify-between items-start p-4 border-b">
+                <h3 class="text-xl font-semibold">Agregar Nuevo Producto</h3>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" data-modal-hide="createProductModal">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 011.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div class="p-6 space-y-6">
+                <form id="createProductForm" action="/api/products/create-product" method="POST" enctype="multipart/form-data">
+                    <label for="title">Título:</label>
+                    <input type="text" id="title" name="title" required>
+
+                    <label for="description">Descripción:</label>
+                    <input type="text" id="description" name="description" required>
+
+                    <label for="details">Detalles:</label>
+                    <input type="text" id="details" name="details" required>
+
+                    <label for="price">Precio:</label>
+                    <input type="number" id="price" name="price" required>
+
+                    <label for="category">Categoría:</label>
+                    <input type="text" id="category" name="category" required>
+
+                    <label for="image">Imagen:</label>
+                    <input type="file" id="image" name="image" required>
+                    
+                    <button type="submit" class="mt-4 text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5">Crear Producto</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

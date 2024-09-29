@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sabor Natural</title>
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.css" rel="stylesheet" />
+    <script defer src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</head>
+<body class="overflow-x-hidden">
+
+<nav class="bg-white sticky w-full z-20 top-0 start-0 border-b border-gray-200 ">
+    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+        <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
+            <span class="self-center text-2xl font-bold whitespace-nowrap text-blue-500">ElArgentino</span>
+        </a>
+
+        <div class="flex gap-5 items-center">
+            <div class="items-center justify-between hidden w-full md:flex md:w-auto" id="navbar-sticky">
+                <ul class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white">
+                    <li><a href="/" class="block py-2 px-3 text-white bg-blue-500 rounded md:bg-transparent md:text-blue-500 md:p-0 ">Inicio</a></li>
+                    <li><a href="/" class="block py-2 px-3 text-white bg-blue-500 rounded md:bg-transparent md:text-blue-500 md:p-0 ">Promociones</a></li>
+                    <li><a href="/" class="block py-2 px-3 text-white bg-blue-500 rounded md:bg-transparent md:text-blue-500 md:p-0 ">Locales</a></li>
+                    <li><a href="/api/order/find-order/{{oid}}" class="block py-2 px-3 text-white bg-blue-500 rounded md:bg-transparent md:text-blue-500 md:p-0 ">Carrito</a></li>
+                </ul>
+            </div>
+
+            {{#if isAuthenticated}}
+                <div class="flex items-center gap-4 cursor-pointer" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
+                    <span class="sr-only">Open user menu</span>
+                    <div class="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 rounded-full ">
+                        <span id="user-initials" class="font-medium text-gray-600 "></span>
+                    </div>
+                </div>
+
+                <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow" id="user-dropdown">
+                    <div class="px-4 py-3">
+                        <span class="block text-sm text-gray-900">{{user.first_name}} {{user.last_name}}</span>
+                        <span class="block text-sm text-gray-500 truncate ">
+                            {{#if (eq user.role "user")}}
+                                Usuario de compra
+                            {{else if (eq user.role "admin")}}
+                                Administrador
+                            {{else}}
+                                Rol desconocido
+                            {{/if}}
+                        </span>
+                    </div>
+                    <ul class="py-2" aria-labelledby="user-menu-button">
+                        <li><a href="/api/products/admin/products" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100  ">Gestionar productos</a></li>
+                        <li><a href="/api/users/profile/my-account" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Mi perfil</a></li>
+                        <li><a href="/api/users/profile/tickets/{{user.id}}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Mis pedidos</a></li>
+                        <li>
+                            <form class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" action="/api/auth/logout" method="POST">
+                                <button type="submit">Cerrar sesión</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            {{else}}
+                <a href="/api/auth/login">
+                    <button type="button" class="text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center">Iniciar sesión</button>
+                </a>
+            {{/if}}
+        </div>
+    </div>
+</nav>
+
+<section class="max-w-screen-xl mx-auto min-h-screen">
+    {{{body}}}
+</section>
+
+<!-- Footer -->
+<footer class="w-full p-4 bg-blue-500 border-t border-gray-200 shadow md:flex md:items-center md:justify-between md:p-6">
+    <span class="text-sm text-white sm:text-center">
+        © 2023 <a href="/" class="hover:underline">ElArgentino™</a>. Todos los derechos reservados.
+    </span>
+    <ul class="flex flex-wrap items-center mt-3 text-sm font-medium text-white sm:mt-0">
+        <li>
+            <a href="/" class="hover:underline me-4 md:me-6">Inicio</a>
+        </li>
+        <li>
+            <a href="/about" class="hover:underline me-4 md:me-6">Nosotros</a>
+        </li>
+        <li>
+            <a href="/menu" class="hover:underline me-4 md:me-6">Menú</a>
+        </li>
+        <li>
+            <a href="/contact" class="hover:underline">Contacto</a>
+        </li>
+    </ul>
+</footer>
+
+<script>
+    // Función para obtener las iniciales
+    function getInitials(firstName, lastName) {
+        const firstInitial = firstName.charAt(0).toUpperCase();
+        const lastInitial = lastName.charAt(0).toUpperCase();
+        return `${firstInitial}${lastInitial}`;
+    }
+
+    // Aca obtengo las iniciales en el script
+    document.addEventListener("DOMContentLoaded", function() {
+        // Corregimos los nombres de las propiedades que vienen del backend
+        const firstName = "{{user.first_name}}";
+        const lastName = "{{user.last_name}}";
+        const initials = getInitials(firstName, lastName);
+        
+        // Asignamos las iniciales al elemento HTML
+        document.getElementById('user-initials').textContent = initials;
+    });
+</script>
+
+</body>
+</html>

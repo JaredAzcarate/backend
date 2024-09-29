@@ -1,0 +1,91 @@
+<div class="min-h-screen py-20">
+  <h1 class="text-6xl font-bold mb-10 text-blue-500">Checkout</h1>
+
+  <div class="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-12 relative">
+    <!-- Datos de Facturación a la izquierda -->
+    <div class="top-0 sticky">
+      <h2 class="text-2xl font-semibold mb-6">Datos de Facturación</h2>
+
+      <div class="space-y-4">
+        <!-- Nombre completo -->
+        <div class="flex flex-col">
+          <label class="font-medium">Nombre completo:</label>
+          <p class="text-gray-800">{{user.first_name}} {{user.last_name}}</p>
+        </div>
+
+        <!-- Dirección -->
+        <div class="flex flex-col">
+          <label class="font-medium">Dirección:</label>
+          <p class="text-gray-800">{{user.address}}</p>
+        </div>
+
+        <!-- Email -->
+        <div class="flex flex-col">
+          <label class="font-medium">Correo electrónico:</label>
+          <p class="text-gray-800">{{user.email}}</p>
+        </div>
+
+        <!-- Botón para editar datos (opcional) -->
+        <div class="mt-6">
+          <a href="/api/users/profile/edit-account" class="text-blue-500 hover:underline">Editar datos de facturación</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resumen de la compra a la derecha -->
+    <div>
+      {{#if orders}}
+        <ul class="space-y-6">
+          {{#each orders}}
+            <div class="p-4 bg-gray-50 border border-gray-200 rounded-lg shadow-md">
+              <div class="pb-5 border-b">
+                <h4 class="mb-5 font-medium">Resumen de compra</h4>
+                <div class="flex items-start justify-between gap-5">
+                  <div class="w-full">
+                    <p class="text-gray-600 text-sm">Orden Número:</p>
+                    <p class="text-gray-600 text-base font-semibold">{{this.number}}</p>
+                  </div>
+                  <div class="w-full">                
+                    <p class="text-gray-600 text-sm">Estado:</p>
+                    <p class="text-gray-600 text-base font-semibold">{{this.status}}</p>
+                  </div>
+                  <div class="w-full">
+                    <p class="text-gray-600 text-sm">Total a pagar:</p>
+                    <p class="text-gray-600 text-base font-semibold">{{this.totalPrice}}€</p>
+                  </div>
+                </div>
+              </div>
+
+              <h4 class="my-5 font-medium">Productos</h4>
+              <ul class="space-y-4">
+                {{#each this.products}}
+                  <li class="flex items-center p-4 bg-white border border-gray-200 rounded-md">
+                    <!-- Imagen del producto -->
+                    <img class="w-16 h-16 object-cover rounded-md" src="{{this.product.image}}" alt="{{this.product.title}}">
+
+                    <!-- Información del producto -->
+                    <div class="ml-4 flex-1">
+                      <p class="font-semibold text-gray-800">{{this.product.title}}</p>
+                      <p class="text-gray-600">{{this.product.description}}</p>
+                      <p class="text-gray-600">Precio: ${{this.product.price}}</p>
+                      <p class="text-gray-600">Cantidad: {{this.quantity}}</p>
+                    </div>
+                  </li>
+                {{/each}}
+              </ul>
+            </div>
+          {{/each}}
+
+          <!-- Botón para pagar -->
+          <form class="mt-6" action="/api/order/send-purchase/{{oid}}" method="POST">
+            <button class="bg-green-600 text-white px-5 py-2 w-full rounded hover:bg-green-700 transition duration-200" type="submit">
+              Finalizar compra
+            </button>
+          </form>
+        </ul>
+      {{else}}
+        <p class="text-gray-600">No tienes órdenes pendientes.</p>
+      {{/if}}
+    </div>
+  </div>
+</div>

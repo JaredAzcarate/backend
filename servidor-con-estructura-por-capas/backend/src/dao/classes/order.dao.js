@@ -14,7 +14,11 @@ export default class OrderManager {
     }
 
     getPendingOrderByUserId = async (userId) => {
-        return await orderModel.findOne({ user: userId, status: "pending" });
+        return await orderModel.findOne({ user: userId, status: "in_process" });
+    }
+
+    getPendingOrderByUserIdLean = async (userId) => {
+        return await orderModel.findOne({ user: userId, status: "in_process" }).populate('products.product').lean();
     }
 
     getOrderAndProducts = async (oid) => {
@@ -47,5 +51,42 @@ export default class OrderManager {
             return null;
         }
     };
+
+    removeProductById = async (oid, pid) => {
+        try {
+            const order = await orderModel.findById(oid);
+            if (!order) {
+                throw new Error('Order not found');
+            }
+    
+            const productIndex = order.products.findIndex(p => p.product.toString() === pid);
+            if (productIndex === -1) {
+                throw new Error('Product not found in order');
+            }
+    
+            const product = order.products[productIndex].product; 
+            const productQuantity = order.products[productIndex].quantity;
+    
+            order.totalPrice -= product.price * productQuantity;
+            order.products.splice(productIndex, 1);
+            order.totalPrice = Math.max(0, order.totalPrice);
+    
+            await order.save();
+            return order;
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    getAllTicketsByUserId = async (userId) => {
+        try {
+            const tickets = await ticketModel.find({ purchaser: userId }).lean();
+            return tickets;
+        } catch (error) {
+            console.log(error);
+            return [];
+        }
+    };
+    
 
 }

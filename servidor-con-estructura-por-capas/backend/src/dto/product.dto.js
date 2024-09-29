@@ -12,7 +12,7 @@ class ProductDTO {
   static getImageFromMulter(body, file) {
       return new ProductDTO({
           ...body,
-          image: file ? file.path : null
+          image: file ? `/uploads/${file.filename}` : null
       });
   }
 }

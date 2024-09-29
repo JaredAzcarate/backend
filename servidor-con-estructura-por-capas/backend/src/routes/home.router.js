@@ -6,4 +6,5 @@ const router = Router()
 
 router.get('/', anonymousSessionMiddleware, initSessionController)
 
+
 export default router

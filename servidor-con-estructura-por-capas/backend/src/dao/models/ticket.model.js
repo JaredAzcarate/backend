@@ -11,7 +11,12 @@ const ticketSchema = new mongoose.Schema({
         required: true
     },
     amount: { type: Number, required: true },
-    purchaser: { type: String, required: true }
+    purchaser: { 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users',
+        required: true
+    },
+    status: { type: String, default: "pending_payment"}
 });
 
 const ticketModel = mongoose.model(ticketCollection, ticketSchema);

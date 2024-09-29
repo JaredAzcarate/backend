@@ -4,7 +4,7 @@ export default class ProductManager {
 
     getProducts = async () => {
         try {
-            const result = await productsModel.find()
+            const result = await productsModel.find().lean()
             return result
         } catch (error) {
             console.log(error)

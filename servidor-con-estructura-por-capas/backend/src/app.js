@@ -6,13 +6,21 @@ import authRouter from './routes/auth.router.js'
 import userRouter from './routes/user.router.js'
 import productRouter from './routes/product.router.js'
 import mailRouter from './routes/mail.router.js'
+import messagesRouter from './routes/messages.router.js'
 import mongoose from 'mongoose'
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import {__dirname} from './utils/path.utils.js'
 import { addLogger, logErrors } from './middlewares/logger.middleware.js'
-import logger from './utils/logger.utils.js'
+import {layoutMiddleware} from './middlewares/layout.middleware.js'
+import handlebars from 'express-handlebars';
+import Handlebars from 'handlebars';
+import path from 'path'
+import { Server } from 'socket.io';
+import { getProductsController } from './controllers/product.controller.js'
+import { customFetch } from './utils/fetch.utils.js'
+import methodOverride from 'method-override';
 
 
 dotenv.config()
@@ -36,6 +44,9 @@ app.use(bodyParser.json()); // Middleware para leer json
 app.use(bodyParser.urlencoded({ extended: true })); // Middleware para analizar los datos de solicitud codificados en URL sin importar el tipo
 app.use(addLogger);
 
+/* Middleware de Layout */
+app.use(layoutMiddleware);
+app.use(methodOverride('_method')); /* Middleware para simular PUT y DELETE */
 
 /* Routes */
 app.use('/', homeRouter)
@@ -44,31 +55,53 @@ app.use('/api/auth', authRouter)
 app.use('/api/users', userRouter)
 app.use('/api/products', productRouter)
 app.use('/api/mail', mailRouter)
-
-/* Endpoint para probar todos los niveles de logger */
-app.get('/loggerTest', (req, res) => {
-    req.logger.debug('Debug log');
-    req.logger.http('HTTP log');
-    req.logger.info('Info log');
-    req.logger.warning('Warning log');
-    req.logger.error('Error log');
-    req.logger.fatal('Fatal log');
-    res.send('Logger test complete');
-});
-
-app.get('/error', (req, res) => {
-    res.send('Este es un error de ejemplo');
-    req.logger.error('Este es un error de ejemplo')
-});
-
-app.get('/info', (req, res) => {
-    res.send('Este es un ejemplo de log tipo "info"');
-    logger.info('La ruta de "info" ha sido llamada');
-});
+app.use('/message', messagesRouter)
 
 /* Estáticos */
-/*app.use(express.static(path.join(__dirname, '../frontend/build')));  Estaticos de React */
-app.use('/uploads', express.static('uploads')); /* Estaticos de multer */
-app.use(logErrors);
+app.use(express.static(__dirname + '/../public')); /* Estaticos para acceder a js o css */
+app.use('/uploads', express.static(path.join(__dirname, '/../uploads'))); /* Estaticos de multer */
 
-console.log('Environment:', process.env.NODE_ENV);
+/* Handlebars */
+app.engine( 'handlebars', handlebars.engine() );
+app.set('views', __dirname + '/../views') 
+app.set('view engine', 'handlebars') 
+
+/* Registrar el helper eq */
+Handlebars.registerHelper('eq', function(a, b) {
+    return a === b;
+});
+
+/* Creamos un servidor para socket */
+const socketServer = new Server( httpServer );
+
+/* Configuracion de Socket */
+socketServer.on("connection", async (socket) => {
+    console.log('Nuevo cliente conectado');
+
+    try {
+        // Enviar productos actuales a los nuevos clientes conectados
+        let products = await getProductsController();
+        socket.emit('products', products); // Solo al cliente conectado
+        
+    } catch (error) {
+        console.log(error);
+    }
+    
+
+    // Escuchar evento de eliminación de producto
+    socket.on('deleteProduct', async (productId) => {
+        try {
+            // Realizar una llamada HTTP al endpoint de eliminación
+            await customFetch(`/api/products/delete-product/${productId}`, 'DELETE');
+    
+            // Obtener la lista actualizada de productos
+            let products = await getProductsController();
+    
+            // Emitir la lista actualizada de productos a todos los clientes conectados
+            socketServer.emit('products', products); // A todos los clientes
+    
+        } catch (error) {
+            console.log(error);
+        }
+    });
+});
